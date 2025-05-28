@@ -1618,17 +1618,12 @@ void spoll_h(char *params) {
     // No parameters - trigger addressed device only
     addrs[0] = gpibBus.cfg.paddr;
     j = 1;
-  }
-
-  // ALL parameter given?
-  if (strncasecmp(params, "all", 3) == 0) {
+  } else if (strncasecmp(params, "all", 3) == 0) {
+    // ALL parameter given?
     all = true;
     j = 30;
     if (isVerb) dataPort.println(F("Serial poll of all devices requested..."));
-  }
-
-  if (j == 0) {
-
+  } else {
     // Read address parameters into array
     while (j < 15) {
 
