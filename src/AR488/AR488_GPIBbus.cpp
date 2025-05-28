@@ -142,19 +142,35 @@ void GPIBbus::setOperatingMode(enum operatingModes mode) {
   }
 }
 
+// HSHK_BITS (0x1E 0b00011110) -> NDAC NRFD DAV EOI
 
 /***** Set the transmission mode *****/
 void GPIBbus::setTransmitMode(enum transmitModes mode) {
   uint8_t outputs = 0;
   switch (mode) {
-    case TM_IDLE:
-      setGpibCtrlDir(0, HSHK_BITS);           // Set all handshake signals to input_pullup
+    case TM_CTRL_IDLE:
+      outputs = (DAV_BIT | EOI_BIT);          // Signal DAV and EOI, listen to NRFD and NDAC
+      setGpibCtrlDir(outputs, HSHK_BITS);    // Set handshake inputs and outputs
+      setGpibCtrlState(outputs, outputs);  // Set handshake signal states: outputs to unasserted/HIGH
+
+      // this is called after setTransmitMode(TM_CTRL_IDLE)
+      // digitalWrite(SN7516X_TE, LOW); // NDAC NRFD -> outputs
       break;
+
+
+    case TM_DEVICE_IDLE:
+      // this is called before setTransmitMode(TM_DEVICE_IDLE)
+      // digitalWrite(SN7516X_TE, HIGH); // DAV -> output
+
+      setGpibCtrlDir(0, HSHK_BITS);          // All handshake signals to inputs
+      break;
+
     case TM_RECV:
       outputs = (NRFD_BIT | NDAC_BIT);       // Signal NRFD and NDAC, listen to DAV and EOI
       setGpibCtrlDir(outputs, HSHK_BITS);    // Set handshake inputs and outputs (0=input_PULLUP, 1=output)
       setGpibCtrlState(~outputs, outputs);  // Set handshake output signals to asserted/LOW
       break;
+
     case TM_SEND:
       outputs = (DAV_BIT | EOI_BIT);          // Signal DAV and EOI, listen to NRFD and NDAC
       setGpibCtrlDir(outputs, HSHK_BITS);     // Set handshake inputs and outputs (0=input_pullup, 1=output)
@@ -574,10 +590,16 @@ bool GPIBbus::receiveData(Stream &dataStream, bool detectEoi, bool detectEndByte
   while (state == HANDSHAKE_COMPLETE) {
 
     // txBreak > 0 indicates break condition
-    if (txBreak) break;
+    if (txBreak)
+    {
+      break;
+    }
 
     // ATN asserted
-    if (isAsserted(ATN_PIN)) break;
+    if (isAsserted(ATN_PIN))
+    {
+      break;
+    }
 
     // Read the next character on the GPIB bus
     state = readByte(&bytes[0], readWithEoi, &eoiDetected);
@@ -600,13 +622,22 @@ bool GPIBbus::receiveData(Stream &dataStream, bool detectEoi, bool detectEndByte
 
       // EOI detection enabled and EOI detected?
       if (readWithEoi) {
-        if (eoiDetected) break;
+        if (eoiDetected)
+        {
+          break;
+        }
       } else {
         // Has a termination sequence been found ?
         if (detectEndByte) {
-          if (bytes[0] == endByte) break;
+          if (bytes[0] == endByte)
+          {
+            break;
+          }
         } else {
-          if (isTerminatorDetected(bytes, eor)) break;
+          if (isTerminatorDetected(bytes, eor))
+          {
+            break;
+          }
         }
       }
 
@@ -818,15 +849,11 @@ void GPIBbus::setControls(uint8_t state) {
     case CINI:  // Initialisation
 //    Serial.println(F("Set CINI OP_CTRL:"));
       setOperatingMode(OP_CTRL);
-//      gpioFuncList();
-//    Serial.println(F("Set CINI TM_IDLE:"));
-      setTransmitMode(TM_IDLE);
-//      gpioFuncList();
-//    Serial.println(F("Assert REN_BIT:"));
+      setTransmitMode(TM_CTRL_IDLE);
       assertSignal(REN_BIT);
 //    gpioFuncList();
 #ifdef SN7516X
-      digitalWrite(SN7516X_TE, LOW);
+      digitalWrite(SN7516X_TE, LOW); // NDAC NRFD -> outputs
 #ifdef SN7516X_DC
       digitalWrite(SN7516X_DC, LOW);
 #endif
@@ -841,10 +868,10 @@ void GPIBbus::setControls(uint8_t state) {
 
 
     case CIDS:  // Controller idle state
+      setTransmitMode(TM_CTRL_IDLE);
       clearSignal(ATN_BIT);
-      setTransmitMode(TM_IDLE);
 #ifdef SN7516X
-      digitalWrite(SN7516X_TE, LOW);
+      digitalWrite(SN7516X_TE, LOW); // NDAC NRFD -> outputs
 #endif
 #ifdef DEBUG_GPIBbus_CONTROL
       DB_PRINT(F("Set GPIB lines to idle state"), "");
@@ -856,7 +883,7 @@ void GPIBbus::setControls(uint8_t state) {
       setTransmitMode(TM_SEND);
       assertSignal(ATN_BIT);
 #ifdef SN7516X
-      digitalWrite(SN7516X_TE, HIGH);
+      digitalWrite(SN7516X_TE, HIGH); // DAV -> output
 #endif
 #ifdef DEBUG_GPIBbus_CONTROL
       DB_PRINT(F("Set GPIB lines for sending a command"), "");
@@ -869,7 +896,7 @@ void GPIBbus::setControls(uint8_t state) {
       clearSignal(ATN_BIT);
       setTransmitMode(TM_RECV);
 #ifdef SN7516X
-      digitalWrite(SN7516X_TE, LOW);
+      digitalWrite(SN7516X_TE, LOW); // NDAC NRFD -> outputs
 #endif
 #ifdef DEBUG_GPIBbus_CONTROL
       DB_PRINT(F("Set GPIB lines for reading data"), "");
@@ -881,7 +908,7 @@ void GPIBbus::setControls(uint8_t state) {
       clearSignal(ATN_BIT);
       setTransmitMode(TM_SEND);
 #ifdef SN7516X
-      digitalWrite(SN7516X_TE, HIGH);
+      digitalWrite(SN7516X_TE, HIGH); // DAV -> output
 #endif
 #ifdef DEBUG_GPIBbus_CONTROL
       DB_PRINT(F("Set GPIB lines for writing data"), "");
@@ -896,7 +923,7 @@ void GPIBbus::setControls(uint8_t state) {
 
 
 #ifdef SN7516X
-      digitalWrite(SN7516X_TE, HIGH);
+      digitalWrite(SN7516X_TE, HIGH); // DAV -> output
 #ifdef SN7516X_DC
       digitalWrite(SN7516X_DC, HIGH);
 #endif
@@ -916,9 +943,9 @@ void GPIBbus::setControls(uint8_t state) {
 
     case DIDS:  // Device idle state
 #ifdef SN7516X
-      digitalWrite(SN7516X_TE, HIGH);
+      digitalWrite(SN7516X_TE, HIGH); // DAV -> output
 #endif
-      setTransmitMode(TM_IDLE);
+      setTransmitMode(TM_DEVICE_IDLE);
       // Set data bus to idle state
       readyGpibDbus();
 #ifdef DEBUG_GPIBbus_CONTROL
@@ -929,7 +956,7 @@ void GPIBbus::setControls(uint8_t state) {
 
     case DLAS:  // Device listner active (actively listening - can handshake)
 #ifdef SN7516X
-      digitalWrite(SN7516X_TE, LOW);
+      digitalWrite(SN7516X_TE, LOW); // NDAC NRFD -> outputs
 #endif
       setTransmitMode(TM_RECV);
 #ifdef DEBUG_GPIBbus_CONTROL
@@ -940,7 +967,7 @@ void GPIBbus::setControls(uint8_t state) {
 
     case DTAS:  // Device talker active (sending data)
 #ifdef SN7516X
-      digitalWrite(SN7516X_TE, HIGH);
+      digitalWrite(SN7516X_TE, HIGH); // DAV -> output
 #endif
       setTransmitMode(TM_SEND);
 #ifdef DEBUG_GPIBbus_CONTROL
@@ -956,6 +983,9 @@ void GPIBbus::setControls(uint8_t state) {
 
   // Save state
   cstate = state;
+
+  // just to make sure that pin state has settled, not time critical
+  delayMicroseconds(2);
 }
 
 
@@ -1117,6 +1147,9 @@ enum gpibHandshakeStates GPIBbus::readByte(uint8_t *db, bool readWithEoi, bool *
     }
 
     if (gpibState == READ_DATA) {
+      // data settling time
+      if (settle_r_time)
+        delayMicroseconds(settle_r_time);
       // Check for EOI signal
       if (readWithEoi && isAsserted(EOI_PIN)) *eoi = true;
       // read from DIO
@@ -1140,6 +1173,13 @@ enum gpibHandshakeStates GPIBbus::readByte(uint8_t *db, bool readWithEoi, bool *
     currentMillis = millis();
   }
 
+  // make sure that NDAC and NRFD are asserted (LOW)
+  if (gpibState != HANDSHAKE_COMPLETE)
+  {
+    assertSignal(NRFD_BIT);
+    assertSignal(NDAC_BIT);
+  }
+
   // Otherwise return stage
 #ifdef DEBUG_GPIBbus_RECEIVE
   if ((gpibState == HANDSHAKE_STARTED) || (gpibState == UNASSERTED_NDAC)) {
@@ -1152,12 +1192,17 @@ enum gpibHandshakeStates GPIBbus::readByte(uint8_t *db, bool readWithEoi, bool *
   return gpibState;
 }
 
-
 enum gpibHandshakeStates GPIBbus::writeByte(uint8_t db, bool isLastByte) {
   unsigned long startMillis = millis();
   unsigned long currentMillis = startMillis + 1;
   const unsigned long timeval = cfg.rtmo;
   enum gpibHandshakeStates gpibState = HANDSHAKE_START;
+  static unsigned long lastWrite = 0;
+
+  // multiline settling time (probably not necessary)
+
+  if (micros() - lastWrite < 2)
+    delayMicroseconds(2); // remove or adjust if write speed is becoming too slow
 
   // Wait for interval to expire
   while ((unsigned long)(currentMillis - startMillis) < timeval) {
@@ -1202,8 +1247,15 @@ enum gpibHandshakeStates GPIBbus::writeByte(uint8_t db, bool isLastByte) {
 #ifdef DEBUG_GPIBbus_SEND
         DB_PRINT(F("Asserting EOI..."), "");
 #endif
-        assertSignal(DAV_BIT | EOI_BIT);
+        // EOI (like data) must be asserted before DAV
+        assertSignal(EOI_BIT);
+        if (settle_s_time)
+          delayMicroseconds(settle_s_time);
+        assertSignal(DAV_BIT);
       } else {
+        // not last byte + EOI
+        if (settle_s_time)
+          delayMicroseconds(settle_s_time);
         // Assert DAV (data is valid - ready to collect)
         assertSignal(DAV_BIT);
       }
@@ -1227,11 +1279,14 @@ enum gpibHandshakeStates GPIBbus::writeByte(uint8_t db, bool isLastByte) {
     currentMillis = millis();
   }
 
+  lastWrite = micros();
+
   // Handshake complete
   if (gpibState == HANDSHAKE_COMPLETE) {
     if (cfg.eoi && isLastByte) {
       // If EOI enabled and this is the last byte then un-assert both DAV and EOI
-      clearSignal(DAV_BIT | EOI_BIT);
+      clearSignal(DAV_BIT);
+      clearSignal(EOI_BIT);
     } else {
       // Unassert DAV
       clearSignal(DAV_BIT);
@@ -1240,6 +1295,9 @@ enum gpibHandshakeStates GPIBbus::writeByte(uint8_t db, bool isLastByte) {
     setGpibDbus(0);
     return gpibState;
   }
+
+  // make sure that data are not considered valid
+  clearSignal(DAV_BIT);
 
   // Otherwise timeout or ATN/IFC return stage at which it ocurred
 #ifdef DEBUG_GPIBbus_SEND

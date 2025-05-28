@@ -188,6 +188,11 @@
 #ifdef ESP32_Wilhelm_AR488_ESP32S2_R4
   #define SN7516X
   #define SN7516X_TE 17
+  // requires hardware modification:
+  // * remove wire from U12 pin 11 to 19
+  // * unsolder R6 (below ESP32)
+  // * add wire from former R6 hot end to U12 pin 11 (DC)
+  #define SN7516X_DC 45
 #elif ESP32_Wilhelm_AR488_ESP32S2_R5
   #define SN7516X
   #define SN7516X_TE 17

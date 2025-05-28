@@ -172,6 +172,8 @@ static const char cmdHelp[] PROGMEM = {
   "read_tmo_ms:P Read timeout specified between 1 - 3000 milliseconds\n"
   "rst:P Reset the controller\n"
   "savecfg:P Save configration\n"
+  "settle_r:P Settling time on read operation, between 0 and 16000 microseconds\n"
+  "settle_s:P Settling time on send operation, between 0 and 16000 microseconds\n"
   "spoll:P Serial poll the addressed host or all instruments\n"
   "srq:P Return status of srq signal (1-srq asserted/0-srq not asserted)\n"
   "status:P Set the status byte to be returned on being polled (bit 6 = RQS, i.e SRQ asserted)\n"
@@ -868,7 +870,9 @@ static cmdRec cmdHidx [] = {
   { "unt",         2, (void(*)(char*)) untalk_h    },
   { "ver",         3, ver_h       },
   { "verbose",     3, (void(*)(char*)) verb_h    },
-  { "xdiag",       3, xdiag_h     }
+  { "xdiag",       3, xdiag_h     },
+  { "settle_r",    3, settler_h     },
+  { "settle_s",    3, settles_h     },
 };
 
 
@@ -1237,6 +1241,38 @@ void rtmo_h(char *params) {
     }
   } else {
     dataPort.println(gpibBus.cfg.rtmo);
+  }
+}
+
+/***** Show or set receive settle time (in us) *****/
+void settler_h(char *params) {
+  uint16_t val;
+  if (params != NULL) {
+    if (notInRange(params, 0, 32000, val)) return;
+    gpibBus.setSettleRTime(val);
+    if (isVerb) {
+      dataPort.print(F("Set [receive settle time] to: "));
+      dataPort.print(val);
+      dataPort.println(F(" us"));
+    }
+  } else {
+    dataPort.println(gpibBus.getSettleRTime());
+  }
+}
+
+/***** Show or set send settle time (in us) *****/
+void settles_h(char *params) {
+  uint16_t val;
+  if (params != NULL) {
+    if (notInRange(params, 0, 32000, val)) return;
+    gpibBus.setSettleSTime(val);
+    if (isVerb) {
+      dataPort.print(F("Set [send settle time] to: "));
+      dataPort.print(val);
+      dataPort.println(F(" us"));
+    }
+  } else {
+    dataPort.println(gpibBus.getSettleSTime());
   }
 }
 
@@ -1618,17 +1654,12 @@ void spoll_h(char *params) {
     // No parameters - trigger addressed device only
     addrs[0] = gpibBus.cfg.paddr;
     j = 1;
-  }
-
-  // ALL parameter given?
-  if (strncasecmp(params, "all", 3) == 0) {
+  } else if (strncasecmp(params, "all", 3) == 0) {
+    // ALL parameter given?
     all = true;
     j = 30;
     if (isVerb) dataPort.println(F("Serial poll of all devices requested..."));
-  }
-
-  if (j == 0) {
-
+  } else {
     // Read address parameters into array
     while (j < 15) {
 
@@ -1992,7 +2023,6 @@ void verb_h() {
   dataPort.print("Verbose: ");
   dataPort.println(isVerb ? "ON" : "OFF");
 }
-
 
 /***** Set version string *****/
 /* Replace the standard AR488 version string with something else
