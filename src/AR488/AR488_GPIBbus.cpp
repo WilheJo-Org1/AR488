@@ -3,7 +3,7 @@
 #include "AR488_Config.h"
 #include "AR488_GPIBbus.h"
 
-/***** AR488_GPIB.cpp, ver. 0.53.18, 05/07/2025 *****/
+/***** AR488_GPIB.cpp, ver. 0.53.19, 06/07/2025 *****/
 
 
 /****** Process status values *****/
@@ -146,16 +146,25 @@ void GPIBbus::setTransmitMode(enum transmitMode mode) {
   switch (mode) {
     case TM_IDLE:
       setGpibCtrlDir(0, HSHK_BITS);           // Set all handshake signals to input_pullup
+      #ifdef SN7516X
+        digitalWrite(SN7516X_TE, LOW);
+      #endif
       break;
     case TM_RECV:
       outputs = (NRFD_BIT | NDAC_BIT);        // Signal NRFD and NDAC, listen to DAV and EOI
       setGpibCtrlDir(outputs, HSHK_BITS);     // Set handshake inputs and outputs (0=input_PULLUP, 1=output)
       setGpibCtrlState(~outputs, outputs);    // Set handshake output signals to asserted/LOW
       break;
+      #ifdef SN7516X
+        digitalWrite(SN7516X_TE, LOW);
+      #endif
     case TM_SEND:
       outputs = (DAV_BIT | EOI_BIT);          // Signal DAV and EOI, listen to NRFD and NDAC
       setGpibCtrlDir(outputs, HSHK_BITS);     // Set handshake inputs and outputs (0=input_pullup, 1=output)
       setGpibCtrlState(outputs, outputs);     // Set handshake output signals to unasserted/HIGH
+      #ifdef SN7516X
+        digitalWrite(SN7516X_TE, HIGH);
+      #endif
       break;
   }
 }
@@ -1172,7 +1181,7 @@ enum gpibHandshakeState GPIBbus::readByte(uint8_t *db, bool readWithEoi, bool *e
         // Re-assert NDAC - handshake complete, ready to accept data again
         assertSignal(NDAC_BIT);
         gpibState = HANDSHAKE_COMPLETE;
-        break;
+        return gpibState;
       }
     }
 

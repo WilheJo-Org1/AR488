@@ -14,7 +14,7 @@
 #include "AR488_Eeprom.h"
 
 
-/***** FWVER "AR488 GPIB controller, ver. 0.53.18, 05/07/2025" *****/
+/***** FWVER "AR488 GPIB controller, ver. 0.53.20, 13/07/2025" *****/
 
 /*
   Arduino IEEE-488 implementation by John Chajecki
@@ -812,16 +812,16 @@ bool isIdnQuery(char *buffr) {
 
 
 /***** ++read command detected? *****/
-bool isRead(char *buffr) {
-  char cmd[4];
-  // Copy 2nd to 5th character
-  for (int i = 2; i < 6; i++) {
-    cmd[i - 2] = buffr[i];
-  }
-  // Compare with 'read'
-  if (strncmp(cmd, "read", 4) == 0) return true;
-  return false;
-}
+//bool isRead(char *buffr) {
+//  char cmd[4];
+//  // Copy 2nd to 5th character
+//  for (int i = 2; i < 6; i++) {
+//    cmd[i - 2] = buffr[i];
+//  }
+//  // Compare with 'read'
+//  if (strncmp(cmd, "read", 4) == 0) return true;
+//  return false;
+//}
 
 
 /***** Is the parameter a number *****/
@@ -898,7 +898,6 @@ static cmdRec cmdHidx [] = {
   { "rst",         3, (void(*)(char*)) rst_h     },
   { "trg",         2, trg_h       },
   { "savecfg",     3, (void(*)(char*)) save_h    },
-//  { "secread",     2, secread_h   },
   { "send",        2, send_h      },
   { "setvstr",     3, setvstr_h   },
   { "spoll",       2, spoll_h     },
@@ -1408,19 +1407,118 @@ void ver_h(char *params) {
 }
 
 
+
+/***** Determine and set end charcter or EOI signal *****/
+bool validReadEndType(char * param){
+  bool endflg = false;
+  uint16_t endval = 0xff;
+  if (param){
+    if ( (strncasecmp(param, "eoi", 3)) == 0 ){
+      readWithEoi = true;
+      return true;
+    } else if (strlen(param)==1) {
+      if (param[0] == '0') {
+        endval = 0;
+        endflg = true;
+      }
+    } else if (strlen(param) < 5)  {
+      endval = strtoul(param, NULL, 0);
+      if (endval) {
+        if (endval < 256) endflg = true;
+      } else if ( (strncasecmp(param, "0x0", 3) == 0) ) {
+        endval = 0;
+        endflg = true;
+      } 
+    }
+  }
+  if (endflg) {
+    endByte = endval;
+    readWithEndByte = true;
+    return true;
+  }
+  return false;
+}
+
+
+/***** Read from a specific address *****/
+uint16_t readFrom(char * params) {
+//  char * addrs = NULL;
+  char * endtype = NULL;
+  char * pristr = NULL;
+  char * secstr = NULL;
+  uint8_t pri = 0xFF;
+  uint8_t sec = 0xFF;
+
+  if (params[0]){
+    char * addrs = strtok(params, ":");
+    if (addrs) {
+      endtype = strtok(NULL, ":");
+      pristr = strtok(addrs, ", \t");
+      if (pristr) {
+        secstr = strtok(NULL, ", \t");
+        pri = strtoul(pristr, NULL, 0);
+        if (pri>31) return 0xFFFF;
+      }
+      if (secstr) {
+        sec = strtoul(secstr, NULL, 0);
+        if (sec<31) sec = sec + 0x60;
+        if (sec<0x60 || sec>0x7E) return 0xFFFF;
+      }
+      if (endtype) {
+        if (!validReadEndType(endtype)) return 0xFFFF;
+      }
+      return (sec << 8) | pri;
+    }
+  }
+  return 0xFFFF;
+}
+
+
 /***** Address device to talk and read the sent data *****/
 void read_h(char *params) {
-//  uint8_t maxparam = 3;
-//  uint8_t pcnt = 0;
   uint8_t pri = gpibBus.cfg.paddr;
   uint8_t sec = gpibBus.cfg.saddr;
   uint16_t val = 0xFF;
-  char * param;
-  // Clear read flagshaveAddressed
+//  char * param;
+
+  // Clear read flags (Global vars)
   readWithEoi = false;
   readWithEndByte = false;
   endByte = 0;
 
+  if (params) {
+    if (params[0] == '@') {
+      val = readFrom(params+1);
+      if (val == 0xFFFF) {
+        errorMsg(2);
+        return;
+      }else{
+        pri = (uint8_t)val&0xFF;
+        sec = (uint8_t)(val>>8);
+      }
+    }else{
+      if (!validReadEndType(params)) {
+        errorMsg(2);
+        return;
+      }
+    }
+  }
+
+  // Address device to talk
+  if (gpibBus.haveAddressedDevice() != TOTALK) gpibBus.addressDevice(pri, sec, TOTALK);
+
+  // Read data
+  if (gpibBus.cfg.amode == 3) {
+    // In auto continuous mode we set this flag to indicate we are ready for continuous read
+    autoRead = true;
+  } else {
+    // If auto mode is disabled we do a single read
+    gpibBus.receiveData(dataPort, readWithEoi, readWithEndByte, endByte);
+    if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
+    gpibBus.unAddressDevice();
+  }
+
+/*
   // Read any parameters
   if (params != NULL) {
 
@@ -1483,6 +1581,8 @@ void read_h(char *params) {
     if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
     gpibBus.unAddressDevice();
   }
+*/
+
 }
 
 
@@ -2801,66 +2901,6 @@ Serial.println(param);
 
 }
 
-
-/***** Read from secondary address *****/
-/*
-  Parameters: pri,sec
-  pri, sec = GPIB addresses between 0 and 30
-*/
-/*
-void secread_h(char *params) {
-  char * pristr;
-  char * secstr;
-  uint8_t pri;
-  uint8_t sec;
-  unsigned long val;
-
-  if (params != NULL) {
-    pristr = strtok(params, " ,\t");
-    secstr = strtok(NULL, " ,\t");
-
-    // Are addresses numerical
-    if ( (!isNumber(pristr)) || (!isNumber(secstr)) ) {
-      errorMsg(2);
-      return;
-    }
-
-    // Primary address in range ?
-    val = strtoul(pristr, NULL, 10);
-    if (val>30) {
-      errorMsg(2);
-      return;
-    }
-    pri = (uint8_t)val;
-
-    // Secondary address in range ?
-    val = strtoul(secstr, NULL, 10);
-    if (val<31) val = val + 0x60;
-    if (val<0x60 || val>0x7E) {
-      errorMsg(2);
-      return;
-    }
-    sec = (uint8_t)val;
-
-    // Not using controller address ?
-    if (pri == gpibBus.cfg.caddr) {
-      errorMsg(2);
-      return;
-    }
-
-    gpibBus.unAddressDevice();
-    gpibBus.setControls(CIDS);
-    delay(50);
-    gpibBus.addressDevice(pri, sec, TOTALK);
-    gpibBus.receiveData(dataPort, true, false, 0);
-    gpibBus.unAddressDevice();
-
-  }else{
-    errorMsg(1);
-  }
-
-}
-*/
 
 /***** Send device clear (usually resets the device to power on state) *****/
 void unlisten_h() {
