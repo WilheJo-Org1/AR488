@@ -3,7 +3,7 @@
 #include "AR488_Config.h"
 #include "AR488_GPIBbus.h"
 
-/***** AR488_GPIB.cpp, ver. 0.53.19, 06/07/2025 *****/
+/***** AR488_GPIB.cpp, ver. 0.53.22, 18/07/2025 *****/
 
 
 /****** Process status values *****/
@@ -526,17 +526,20 @@ bool GPIBbus::sendCmd(uint8_t cmdByte) {
  * Readbreak:
  * 7 - command received via serial
  */
-enum receiveState GPIBbus::receiveData(Stream &dataStream, bool detectEoi, bool detectEndByte, uint8_t endByte) {
+enum receiveState GPIBbus::receiveData(Stream &dataStream, bool detectEoi, bool detectEndByte, uint8_t endByte, size_t maxSize) {
 
   uint8_t bytes[3] = { 0 };  // Received byte buffer
   uint8_t eor = cfg.eor & 7;
-  int x = 0;
+  size_t x = 0;
   bool readWithEoi = false;
   bool eoiDetected = false;
   enum gpibHandshakeState hstate = HANDSHAKE_COMPLETE;
   enum receiveState rstate = RECEIVE_INIT;
 
   endByte = endByte;  // meaningless but defeats vcompiler warning!
+
+  // Take into account the EOT character
+  if (cfg.eot_en && maxSize > 0) x++;
 
   // Reset transmission break flag
   txBreak = false;
@@ -649,6 +652,12 @@ enum receiveState GPIBbus::receiveData(Stream &dataStream, bool detectEoi, bool 
         }
       }
 
+      // Limit reached
+      if ((maxSize > 0) && (x >= maxSize)) {
+        rstate = RECEIVE_LIMIT;
+        break;
+      }      
+
       // Shift last three bytes in memory
       bytes[2] = bytes[1];
       bytes[1] = bytes[0];
@@ -679,29 +688,20 @@ enum receiveState GPIBbus::receiveData(Stream &dataStream, bool detectEoi, bool 
 
   // Verbose timeout error
 #ifdef DEBUG_GPIBbus_RECEIVE
-  if (state != HANDSHAKE_COMPLETE) {
+  if (hstate != HANDSHAKE_COMPLETE) {
     DB_PRINT(F("Timeout waiting for sender!"), "");
     DB_PRINT(F("Timeout waiting for transfer to complete!"), "");
   }
 #endif
 
-  // Return controller to idle state
-  if (cfg.cmode == 2) {
-
-    // Untalk bus and unlisten controller
-/*
-    if (unAddressDevice()) {
-#ifdef DEBUG_GPIBbus_RECEIVE
-      DB_PRINT(F("Failed to untalk bus"), "");
-#endif
+  // Don't go idle if maxSize is set and receive limit state reached
+  if (rstate != RECEIVE_LIMIT) {
+    // Set to idle state
+    if (cfg.cmode == 2) {
+      setControls(CIDS);    // Controller mode
+    } else {
+      setControls(DIDS);    // Device mode
     }
-*/
-    // Set controller back to idle state
-    setControls(CIDS);
-
-  } else {
-    // Set device back to idle state
-    setControls(DIDS);
   }
 
   // Reset break flag
@@ -722,7 +722,7 @@ enum receiveState GPIBbus::receiveData(Stream &dataStream, bool detectEoi, bool 
 
 
 /***** Send a series of characters as data to the GPIB bus *****/
-void GPIBbus::sendData(char *data, uint8_t dsize) {
+void GPIBbus::sendData(const char *data, uint8_t dsize, bool isLastPacket) {
   //  bool err = false;
   uint8_t tc;
   enum gpibHandshakeState state;
@@ -807,12 +807,13 @@ void GPIBbus::sendData(char *data, uint8_t dsize) {
     }
   }
 
-  if (cfg.cmode == 2) {  // Controller mode
-    // Controller - set lines to idle
-    setControls(CIDS);
-  } else {  // Device mode
-    // Set control lines to idle
-    setControls(DIDS);
+  // If final packet of transmission then go to idle
+  if (isLastPacket) {
+    if (cfg.cmode == 2) {  // Controller mode
+      setControls(CIDS);
+    } else {  // Device mode
+      setControls(DIDS);
+    }
   }
 
 #ifdef DEBUG_GPIBbus_SEND
