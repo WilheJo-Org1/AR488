@@ -7,8 +7,9 @@
 
 
 /***** Firmware version *****/
-#define FWVER "AR488 GPIB controller, ver. 0.53.17 (JW), 03/07/2025"
+#define FWVER "AR488 GPIB controller, ver. 0.53.22 (JW), 18/07/2025"
 #define FWVER_USB 0x0053
+
 
 /***** BOARD CONFIGURATION *****/
 /*
@@ -255,14 +256,13 @@
   // Main module
   //#define DEBUG_SERIAL_INPUT    // serialIn_h(), parseInput_h()
   //#define DEBUG_CMD_PARSER      // getCmd()
-  //#define DEBUG_READ //read_h()
   //#define DEBUG_SEND_TO_INSTR   // sendToInstrument();
   //#define DEBUG_SPOLL           // spoll_h()
   //#define DEBUG_DEVICE_ATN      // attnRequired()
   //#define DEBUG_IDFUNC          // ID command
 
   // AR488_GPIBbus module
-  #define DEBUG_GPIBbus_RECEIVE // GPIBbus::receiveData(), GPIBbus::readByte()
+  //#define DEBUG_GPIBbus_RECEIVE // GPIBbus::receiveData(), GPIBbus::readByte()
   //#define DEBUG_GPIBbus_SEND    // GPIBbus::sendData()
   //#define DEBUG_GPIBbus_CONTROL // GPIBbus::setControls() 
   //#define DEBUG_GPIB_COMMANDS   // GPIBbus::sendCDC(), GPIBbus::sendLLO(), GPIBbus::sendLOC(), GPIBbus::sendGTL(), GPIBbus::sendMSA() 
