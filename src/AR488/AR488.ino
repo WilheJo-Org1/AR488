@@ -14,7 +14,7 @@
 #include "AR488_Eeprom.h"
 
 
-/***** FWVER "AR488 GPIB controller, ver. 0.53.22, 18/07/2025" *****/
+/***** FWVER "AR488 GPIB controller, ver. 0.53.23, 05/08/2025" *****/
 
 /*
   Arduino IEEE-488 implementation by John Chajecki
@@ -559,8 +559,11 @@ if (lnRdy>0){
     if ((gpibBus.cfg.amode==3) && autoRead) {
       // Nothing is waiting on the serial input so read data from GPIB
       if (lnRdy==0) {
-        if (gpibBus.haveAddressedDevice() == TONONE) gpibBus.addressDevice(gpibBus.cfg.paddr, gpibBus.cfg.saddr, TOTALK);
+//        if (gpibBus.haveAddressedDevice() == TONONE) gpibBus.addressDevice(gpibBus.cfg.paddr, gpibBus.cfg.saddr, TOTALK);
+        // Auto 3 needs to address and unadress between each reading
+        gpibBus.addressDevice(gpibBus.cfg.paddr, gpibBus.cfg.saddr, TOTALK);
         errFlg = gpibBus.receiveData(dataPort, readWithEoi, readWithEndByte, endByte);
+        gpibBus.unAddressDevice();
         if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
       }
     }
