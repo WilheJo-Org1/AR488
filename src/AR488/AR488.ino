@@ -544,15 +544,6 @@ if (lnRdy>0){
         gpibBus.unAddressDevice();
       }
 
-      // Auto-receive data from GPIB bus following a query command
-//      if (gpibBus.cfg.amode == 2 && isQuery) {
-//        gpibBus.addressDevice(gpibBus.cfg.paddr, gpibBus.cfg.saddr, TOTALK);
-//        errFlg = gpibBus.receiveData(dataPort, gpibBus.cfg.eoi, false, 0);
-//        if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
-//        isQuery = false;
-//        gpibBus.unAddressDevice();
-//      }
-
     }
 
     // Continuous auto-receive data from GPIB bus
