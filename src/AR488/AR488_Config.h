@@ -7,7 +7,7 @@
 
 
 /***** Firmware version *****/
-#define FWVER "AR488 GPIB controller, ver. 0.53.22 (JW), 18/07/2025"
+#define FWVER "AR488 GPIB controller, ver. 0.53.23 (JW), 18/07/2025"
 #define FWVER_USB 0x0053
 
 

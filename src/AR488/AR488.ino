@@ -14,7 +14,7 @@
 #include "AR488_Eeprom.h"
 
 
-/***** FWVER "AR488 GPIB controller, ver. 0.53.22 (JW), 18/07/2025" *****/
+/***** FWVER "AR488 GPIB controller, ver. 0.53.23 (JW), 18/07/2025" *****/
 
 /*
   Arduino IEEE-488 implementation by John Chajecki
@@ -583,23 +583,17 @@ if (lnRdy>0){
         gpibBus.unAddressDevice();
       }
 
-      // Auto-receive data from GPIB bus following a query command
-      if (gpibBus.cfg.amode == 2 && isQuery) {
-        gpibBus.addressDevice(gpibBus.cfg.paddr, gpibBus.cfg.saddr, TOTALK);
-        errFlg = gpibBus.receiveData(dataPort, gpibBus.cfg.eoi, false, 0);
-        if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
-        isQuery = false;
-        gpibBus.unAddressDevice();
-      }
-
     }
 
     // Continuous auto-receive data from GPIB bus
     if ((gpibBus.cfg.amode==3) && autoRead) {
       // Nothing is waiting on the serial input so read data from GPIB
       if (lnRdy==0) {
-        if (gpibBus.haveAddressedDevice() == TONONE) gpibBus.addressDevice(gpibBus.cfg.paddr, gpibBus.cfg.saddr, TOTALK);
+//        if (gpibBus.haveAddressedDevice() == TONONE) gpibBus.addressDevice(gpibBus.cfg.paddr, gpibBus.cfg.saddr, TOTALK);
+        // Auto 3 needs to address and unadress between each reading
+        gpibBus.addressDevice(gpibBus.cfg.paddr, gpibBus.cfg.saddr, TOTALK);
         errFlg = gpibBus.receiveData(dataPort, readWithEoi, readWithEndByte, endByte);
+        gpibBus.unAddressDevice();
         if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
       }
     }
@@ -848,6 +842,20 @@ bool isIdnQuery(char *buffr) {
   }
   return false;
 }
+
+
+/***** ++read command detected? *****/
+//bool isRead(char *buffr) {
+//  char cmd[4];
+//  // Copy 2nd to 5th character
+//  for (int i = 2; i < 6; i++) {
+//    cmd[i - 2] = buffr[i];
+//  }
+//  // Compare with 'read'
+//  if (strncmp(cmd, "read", 4) == 0) return true;
+//  return false;
+//}
+
 
 /***** Is the parameter a number *****/
 bool isNumber(char *numstr){
@@ -1504,6 +1512,7 @@ void read_h(char *params) {
   uint8_t pri = gpibBus.cfg.paddr;
   uint8_t sec = gpibBus.cfg.saddr;
   uint16_t val = 0xFF;
+//  char * param;
 
   // Clear read flags (Global vars)
   readWithEoi = false;
@@ -1541,6 +1550,72 @@ void read_h(char *params) {
     if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
     gpibBus.unAddressDevice();
   }
+
+/*
+  // Read any parameters
+  if (params != NULL) {
+
+    // 1st parameter ( eoi, terminator character or address value ? )
+    param = strtok(params, " ,\t");
+    if (isNumber(param)) {
+      // Primary address in range ?
+      val = strtoul(param, NULL, 10);
+      if (val>30) {
+        errorMsg(2);
+        return;
+      }
+      pri = (uint8_t)val;
+
+      // 2nd parameter ( * or address value )
+      param = strtok(NULL, " ,\t");
+      if (isNumber(param)) {
+        val = strtoul(param, NULL, 10);
+        if (val<31) val = val + 0x60;
+        if (val<0x60 || val>0x7E) {
+          errorMsg(2);
+          return;
+        }
+        sec = (uint8_t)val;
+
+        // 3rd parameter
+        param = strtok(NULL, " ,\t");
+
+      }else{
+        sec = 0xFF;
+      }
+
+    }
+    
+    // Check for eoi or terminator character
+    if (strlen(param) > 3) {
+      errorMsg(2);
+      return;
+    } else if (strncasecmp(params, "eoi", 3) == 0) { // Read with eoi detection
+      readWithEoi = true;
+    } else { // Assume ASCII character given and convert to an 8 bit byte
+      readWithEndByte = true;
+      endByte = atoi(param);
+    }
+  }
+
+//DB_PRINT(F("readWithEoi:     "), readWithEoi);
+//DB_PRINT(F("readWithEndByte: "), readWithEndByte);
+
+  // Address device to talk
+  if (gpibBus.haveAddressedDevice() != TOTALK) gpibBus.addressDevice(pri, sec, TOTALK);
+
+  // Read data
+  if (gpibBus.cfg.amode == 3) {
+    // In auto continuous mode we set this flag to indicate we are ready for continuous read
+    autoRead = true;
+  } else {
+    // If auto mode is disabled we do a single read
+    gpibBus.receiveData(dataPort, readWithEoi, readWithEndByte, endByte);
+    if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
+    gpibBus.unAddressDevice();
+  }
+*/
+
 }
 
 
