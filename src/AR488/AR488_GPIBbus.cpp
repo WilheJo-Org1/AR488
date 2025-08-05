@@ -154,10 +154,10 @@ void GPIBbus::setTransmitMode(enum transmitMode mode) {
       outputs = (NRFD_BIT | NDAC_BIT);        // Signal NRFD and NDAC, listen to DAV and EOI
       setGpibCtrlDir(outputs, HSHK_BITS);     // Set handshake inputs and outputs (0=input_PULLUP, 1=output)
       setGpibCtrlState(~outputs, outputs);    // Set handshake output signals to asserted/LOW
-      break;
       #ifdef SN7516X
         digitalWrite(SN7516X_TE, LOW);
       #endif
+      break;
     case TM_SEND:
       outputs = (DAV_BIT | EOI_BIT);          // Signal DAV and EOI, listen to NRFD and NDAC
       setGpibCtrlDir(outputs, HSHK_BITS);     // Set handshake inputs and outputs (0=input_pullup, 1=output)
