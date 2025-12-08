@@ -3,7 +3,7 @@
 #include "AR488_Config.h"
 #include "AR488_GPIBbus.h"
 
-/***** AR488_GPIB.cpp, ver. 0.53.23, 05/08/2025 *****/
+/***** AR488_GPIB.cpp, ver. 0.53.26, 08/10/2025 *****/
 
 
 /****** Process status values *****/
@@ -36,13 +36,10 @@ GPIBbus::GPIBbus() {
 
 /***** Start the bus in controller or device mode depending on config *****/
 void GPIBbus::begin() {
-#if defined(RAS_PICO_L1) || defined(RAS_PICO_L2) 
+#if defined(ARDUINO_ARCH_RP2040)
   initRpGpioPins();
 #endif
 //gpioFuncList();
-#ifdef LEVEL_SHIFTER
-  initLevelShifter();
-#endif
   if (isController()) {
     startControllerMode();
 //    gpioFuncList();
@@ -208,6 +205,7 @@ bool GPIBbus::isController() {
 
 /***** Detect selected pin state *****/
 bool GPIBbus::isAsserted(uint8_t gpibsig) {
+/*
 #ifdef AR488_MCP23S17 
   uint8_t mcpPinAssertedReg = 0;
   mcpPinAssertedReg = ~getMcpIntAReg();
@@ -218,6 +216,16 @@ bool GPIBbus::isAsserted(uint8_t gpibsig) {
 #endif
   if (getGpibPinState(gpibsig) == LOW) return true;
   return false;
+*/
+
+#if defined(__AVR__) && not defined(AR488_MCP23S17)
+  if (digitalRead(gpibsig) == LOW) return true;
+  return false;
+#else
+  if (getGpibPinState(gpibsig) == LOW) return true;
+  return false;
+#endif
+
 }
 
 

@@ -7,8 +7,7 @@
 
 
 /***** Firmware version *****/
-#define FWVER "AR488 GPIB controller, ver. 0.53.23 (JW), 18/07/2025"
-#define FWVER_USB 0x0053
+#define FWVER "AR488 GPIB controller, ver. 0.53.26 (JW), 08/10/2025"
 
 
 /***** BOARD CONFIGURATION *****/
@@ -92,12 +91,19 @@
   /** RP2040 Boards **/
   #define RAS_PICO_L1
   //#define RAS_PICO_L2
+  //#define RAS_PICO_L3
+  //#define RAS_PICO_L4
 
 //#elif defined(ARDUINO_NANO_RP2040_CONNECT)
 
 //#elif defined(ARDUINO_ARCH_MBED_NANO)
 
 //#elif defined(ARDUINO_ARCH_MBED_RP2040)
+
+#elif defined(ARDUINO_ARCH_RENESAS)
+  /** UNO/NANO (Renesas) R4 boards **/
+  /* NOTE: Renesas RA4M1 boards work only with SN7516x buffer chips */
+  #define RA4M1_NANO_R4
 
 #endif  // Board/layout selection
 
@@ -114,14 +120,7 @@
 #define DATAPORT_ENABLE
 #ifdef DATAPORT_ENABLE
   // Serial port device
-#if  ARDUINO_USB_CDC_ON_BOOT!=1
-  #define AR_SERIAL_PORT_USE_USBSerial 1
-  #define AR_SERIAL_PORT USBSerial
-  extern USBCDC USBSerial;
-#else
   #define AR_SERIAL_PORT Serial
-#endif
-
   // #define AR_SERIAL_SWPORT
   // Set port operating speed
   #define AR_SERIAL_SPEED 115200

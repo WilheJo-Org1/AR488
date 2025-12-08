@@ -14,7 +14,7 @@
 #include "AR488_Eeprom.h"
 
 
-/***** FWVER "AR488 GPIB controller, ver. 0.53.23 (JW), 18/07/2025" *****/
+/***** FWVER "AR488 GPIB controller, ver. 0.53.26 (JW), 08/10/2025" *****/
 
 /*
   Arduino IEEE-488 implementation by John Chajecki
@@ -1189,11 +1189,13 @@ bool notInRange(char *param, uint16_t lowl, uint16_t higl, uint16_t &rval) {
 #ifdef USE_MACROS
 void execMacro(uint8_t idx) {
   char c;
-  const char * macro = pgm_read_word(macros + idx);
-  int ssize = strlen_P(macro);
+//  const char * macptrs = pgm_read_ptr(macros);
+//  const char macro[] = macptrs[idx];
+  const char * macro = (const char *)pgm_read_ptr(macros + idx);
+  size_t ssize = strlen_P(macro);
 
   // Read characters from macro character array
-  for (int i = 0; i < ssize; i++) {
+  for (size_t i = 0; i < ssize; i++) {
     c = pgm_read_byte_near(macro + i);
     if (c == CR || c == LF || i == (ssize - 1)) {
       // Reached terminator or end of marcro. Add to buffer before processing
@@ -1768,7 +1770,7 @@ void rst_h() {
   rp2040.reboot();
 #elif defined(__IMXRT1062__) 
   SCB_AIRCR = 0x05FA0004;
-#elif defined(ARDUINO_UNOR4_MINIMA) || defined (ARDUINO_UNOR4_WIFI)
+#elif defined(ARDUINO_ARCH_RENESAS)
   NVIC_SystemReset();
 #else
   // Otherwise restart program (soft reset)
@@ -2119,7 +2121,7 @@ void dcl_h() {
 
 /***** Re-load default configuration *****/
 void default_h(char *params) {
-  #if defined(__AVR__) || defined (ESP32)
+  #if defined(__AVR__) || defined (ESP32) || defined (ARDUINO_ARCH_RENESAS)
   if (params != NULL) {
     if (strncasecmp(params, "wipe", 4) == 0) {
       epErase();
@@ -2220,7 +2222,7 @@ void setvstr_h(char *params) {
 
   if (plen > 47) plen = 47;
   memset(idparams, '\0', 64);
-  strncpy(idparams, vstr, 7);
+  strncpy(idparams, vstr, 8);
   strncat(idparams, params, plen);
 
   id_h(idparams);
@@ -2388,8 +2390,10 @@ void macro_h(char *params) {
     //    execMacro((uint8_t)val);
     runMacro = (uint8_t)val;
   } else {
-    for (int i = 0; i < 10; i++) {
-      macro = (pgm_read_word(macros + i));
+    for (uint8_t i = 0; i < 10; i++) {
+//      macro = pgm_read_ptr(macros[i]);
+//      macro = (const char *)pgm_read_word(macros + i);
+      macro = (const char *)pgm_read_ptr(macros + i);
       //      dataPort.print(i);dataPort.print(F(": "));
       if (strlen_P(macro) > 0) {
         dataPort.print(i);

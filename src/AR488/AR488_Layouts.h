@@ -6,7 +6,7 @@
 #include "AR488_Config.h"
 
 
-/***** AR488_Hardware.h, ver. 0.53.18, 05/07/2025 *****/
+/***** AR488_Hardware.h, ver. 0.53.26, 08/10/2025 *****/
 
 
 ///=================================///
@@ -709,34 +709,102 @@ void gpioFuncList();
 
 
 
-/*************************************************/
-/***** NANO RP2040 CONNECT LAYOUT DEFINITION *****/
-/***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
-#ifdef RPI_NANO_RP2040
+/****************************************/
+/***** RAS PICO LAYOUT 3 DEFINITION *****/
+/***** vvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
+#ifdef RAS_PICO_L3
 
-#define DIO1_PIN  21   /* D9, GPIB 1  */
-#define DIO2_PIN  20   /* D8, GPIB 2  */
-#define DIO3_PIN  19   /* D7, GPIB 3  */
-#define DIO4_PIN  18   /* D6, GPIB 4  */
-#define DIO5_PIN  17   /* D5, GPIB 13 */
-#define DIO6_PIN  16   /* D4, GPIB 14 */
-#define DIO7_PIN  15   /* D3, GPIB 15 */
-#define DIO8_PIN  25   /* D2, GPIB 16 */
+void gpioFuncList();
 
-#define IFC_PIN   27   /* D15, GPIB 9  */
-#define NDAC_PIN  28   /* D16, GPIB 8  */
-#define NRFD_PIN  29   /* D17, GPIB 7  */
-#define DAV_PIN   12   /* D18, GPIB 6  */
-#define EOI_PIN   13   /* D19, GPIB 5  */
+#define DIO1_PIN   2   /* GPIB 1  */
+#define DIO2_PIN   3   /* GPIB 2  */
+#define DIO3_PIN   4   /* GPIB 3  */
+#define DIO4_PIN   5   /* GPIB 4  */
+#define DIO5_PIN   6   /* GPIB 13 */
+#define DIO6_PIN   7   /* GPIB 14 */
+#define DIO7_PIN   8   /* GPIB 15 */
+#define DIO8_PIN   9   /* GPIB 16 */
 
-#define SRQ_PIN    6   /* D13, GPIB 10 */
-#define REN_PIN    4   /* D12, GPIB 17 */
-#define ATN_PIN    7   /* D10, GPIB 11 */
+#define IFC_PIN   10   /* GPIB 9  */
+#define NDAC_PIN  11   /* GPIB 8  */
+#define NRFD_PIN  12   /* GPIB 7  */
+#define DAV_PIN   13   /* GPIB 6  */
+#define EOI_PIN   14   /* GPIB 5  */
 
-#endif // RPI_NANO_RP2040
-/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
-/***** NANO RP2040 CONNECT LAYOUT DEFINITION *****/
-/*************************************************/
+#define REN_PIN   15   /* GPIB 17 */
+#define SRQ_PIN   20   /* GPIB 10 */
+#define ATN_PIN   21   /* GPIB 11 */
+
+#endif // RAS_PICO_L3
+/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***** RAS PICO LAYOUT 3 DEFINITION *****/
+/****************************************/
+
+
+
+/****************************************/
+/***** RAS PICO LAYOUT 4 DEFINITION *****/
+/***** vvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
+#ifdef RAS_PICO_L4
+
+void gpioFuncList();
+
+#define DIO1_PIN  10   /* GPIB 1  */
+#define DIO2_PIN  11   /* GPIB 2  */
+#define DIO3_PIN  12   /* GPIB 3  */
+#define DIO4_PIN  13   /* GPIB 4  */
+#define DIO5_PIN  14   /* GPIB 13 */
+#define DIO6_PIN  15   /* GPIB 14 */
+#define DIO7_PIN  20   /* GPIB 15 */
+#define DIO8_PIN  21   /* GPIB 16 */
+
+#define IFC_PIN    2   /* GPIB 9  */
+#define NDAC_PIN   3   /* GPIB 8  */
+#define NRFD_PIN   4   /* GPIB 7  */
+#define DAV_PIN    5   /* GPIB 6  */
+#define EOI_PIN    6   /* GPIB 5  */
+#define REN_PIN    7   /* GPIB 17 */
+#define SRQ_PIN    8   /* GPIB 10 */
+#define ATN_PIN    9   /* GPIB 11 */
+
+#endif // RAS_PICO_L4
+/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***** RAS PICO LAYOUT 4 DEFINITION *****/
+/****************************************/
+
+
+
+/*********************************************/
+/***** NANO R4 RENESAS LAYOUT DEFINITION *****/
+/***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
+#ifdef RA4M1_NANO_R4
+
+/* NOTE: Renesas RA4M1 boards work only with SN7516x buffer chips */
+
+/***** UNO/NANO R4 (Renesas) pinout *****/
+#define DIO1_PIN  14  /* GPIB 1  : P014 */
+#define DIO2_PIN  15  /* GPIB 2  : P000 */
+#define DIO3_PIN  16  /* GPIB 3  : P001 */
+#define DIO4_PIN  17  /* GPIB 4  : P002 */
+#define DIO5_PIN  18  /* GPIB 13 : P101 */
+#define DIO6_PIN  19  /* GPIB 14 : P100 */
+#define DIO7_PIN   4  /* GPIB 15 : P103 */
+#define DIO8_PIN   5  /* GPIB 16 : P102 */
+
+#define IFC_PIN    8  /* GPIB 9  : P303 */
+#define NDAC_PIN   9  /* GPIB 8  : P304 */
+#define NRFD_PIN  10  /* GPIB 7  : P107 */
+#define DAV_PIN   11  /* GPIB 6  : P106 */
+#define EOI_PIN   12  /* GPIB 5  : P102 */
+
+#define SRQ_PIN    2  /* GPIB 10 : P105 */
+#define REN_PIN    3  /* GPIB 17 : P104 */
+#define ATN_PIN    7  /* GPIB 11 : P109 */
+
+#endif  // RA4M1_NANO_R4
+/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***** NANO R4 RENESAS LAYOUT DEFINITION *****/
+/*********************************************/
 
 
 
@@ -755,9 +823,9 @@ void gpioFuncList();
 unsigned long setRegisterMask(const uint8_t bus[]);
 
 #endif  // ESP32_FUNCTIONS
-/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
-/***** GLOBAL DEFINITIONS SECTION *****/
-/**************************************/
+/***** ^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***** ESP32 DEFINITIONS SECTION *****/
+/*************************************/
 
 
 
@@ -778,7 +846,7 @@ uint8_t getGpibPinState(uint8_t pin);
   void shiftEnable(bool stat);
 #endif
 
-#if defined(RAS_PICO_L1) || defined(RAS_PICO_L2)
+#if defined(ARDUINO_ARCH_RP2040)
   void initRpGpioPins();
 #endif
 

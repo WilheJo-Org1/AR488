@@ -11,7 +11,7 @@
 #endif
 
 
-/***** AR488_Eeprom.h, ver. 0.01.05, 26/06/2025 *****/
+/***** AR488_Eeprom.h, ver. 0.01.06, 08/10/2025 *****/
 
 /*
  * EEPROM SIZES:
@@ -25,7 +25,7 @@
  */
 
 
-#if defined (__AVR__) || defined (ESP32)
+#if defined (__AVR__) || defined (ESP32) || defined (ARDUINO_ARCH_RENESAS)
 
 
 #define EESIZE 256
@@ -48,6 +48,6 @@ void epViewData(Stream& outputStream);
 bool isEepromClear();
 
 
-#endif  // defined (__AVR__) || defined (ESP32)
+#endif  // defined (__AVR__) || defined (ESP32) || defined (ARDUINO_ARCH_RENESAS)
 
 #endif  // AR488_EEPROM_H
