@@ -590,59 +590,6 @@ void setPortPullupBits(PORT_t port, uint8_t reg);
 /***** ESP32_Wilhelm_AR488_ESP32S2_Rx LAYOUT DEFINITIONS *****/
 /***********************************************/
 
-/***********************************************/
-/***** ESP32_Wilhelm_AR488_ESP32S2_Rx LAYOUT DEFINITIONS *****/
-/***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
-#ifdef ESP32_Wilhelm_AR488_ESP32S2_R4
-#define DIO1_PIN   8    /* GPIB  8 */
-#define DIO2_PIN   9    /* GPIB  9 */
-#define DIO3_PIN   10   /* GPIB 10 */
-#define DIO4_PIN   11   /* GPIB 11 */
-#define DIO5_PIN   12   /* GPIB 12 */
-#define DIO6_PIN   13   /* GPIB 13 */
-#define DIO7_PIN   14   /* GPIB 14 */
-#define DIO8_PIN   15   /* GPIB 15 */
-
-#define IFC_PIN    38   /* GPIB 34 */
-#define NDAC_PIN   33   /* GPIB 33 */
-#define NRFD_PIN   34   /* GPIB 34 */
-#define DAV_PIN    40   /* GPIB 40 */
-#define EOI_PIN    35   /* GPIB 35 */
-
-#define SRQ_PIN    37   /* GPIB 37 */
-#define REN_PIN    26   /* GPIB 21 */
-#define ATN_PIN    36   /* GPIB 36 */
-
-#endif // ESP32_Wilhelm_AR488_ESP32S2_R4
-
-#ifdef ESP32_Wilhelm_AR488_ESP32S2_R5
-
-#define DIO1_PIN   8    /* GPIB  8 */
-#define DIO2_PIN   9    /* GPIB  9 */
-#define DIO3_PIN   10   /* GPIB 10 */
-#define DIO4_PIN   11   /* GPIB 11 */
-#define DIO5_PIN   12   /* GPIB 12 */
-#define DIO6_PIN   13   /* GPIB 13 */
-#define DIO7_PIN   14   /* GPIB 14 */
-#define DIO8_PIN   15   /* GPIB 15 */
-
-#define IFC_PIN     4   /* GPIB  4 */
-#define NDAC_PIN   33   /* GPIB 33 */
-#define NRFD_PIN   34   /* GPIB 34 */
-#define DAV_PIN     5   /* GPIB  5 */
-#define EOI_PIN    35   /* GPIB 35 */
-
-#define SRQ_PIN    37   /* GPIB 37 */
-#define REN_PIN    21   /* GPIB 21 */
-#define ATN_PIN    36   /* GPIB 36 */
-
-#endif // ESP32_Wilhelm_AR488_ESP32S2_R5
-/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
-/***** ESP32_Wilhelm_AR488_ESP32S2_Rx LAYOUT DEFINITIONS *****/
-/***********************************************/
-
-
-
 /***************************************/
 /***** RAS PICO LAYOUT 1 DEFINITION *****/
 /***** vvvvvvvvvvvvvvvvvvvvvvvvvvv *****/

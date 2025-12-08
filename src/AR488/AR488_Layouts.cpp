@@ -2396,6 +2396,10 @@ void setGpibCtrlDir(uint8_t bits, uint8_t mask) {
 
 }
 
+uint8_t getGpibPinState(uint8_t pin){
+  return digitalRead(pin);
+}
+
 #endif
 /***** ^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
 /***** CUSTOM PIN LAYOUT SECTION *****/
