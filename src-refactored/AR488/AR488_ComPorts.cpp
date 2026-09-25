@@ -1,11 +1,21 @@
 #include <Arduino.h>
 #include "AR488_ComPorts.h"
 
-/***** AR488_ComPorts.cpp, ver. 0.53.46, 22/05/2026 *****/
 
+/*=============================================================*\
+||                                                             ||
+||       AR488 GPIB Interface,  ver. 0.55.22, 05/07/2026       ||
+||   Twilight Logic, https://github.com/Twilight-Logic/AR488   ||
+||                                                             ||
+||                    COMMUNICATION PORTS                      ||
+||                                                             ||
+\*=============================================================*/
 
-/***** DEVNULL Library *****
- *  AUTHOR: Rob Tillaart
+/***************************/
+/***** DEVNULL LIBRARY *****/
+/******vvvvvvvvvvvvvvv******/
+
+/*  AUTHOR: Rob Tillaart
  *  VERSION: 0.1.5
  *  PURPOSE: Arduino library for a /dev/null stream - useful for testing
  *  URL: https://github.com/RobTillaart/DEVNULL
@@ -56,10 +66,113 @@ int DEVNULL::lastByte()
 }
 
 
+/******^^^^^^^^^^^^^^^******/
+/***** DEVNULL LIBRARY *****/
+/***************************/
+
+
+
+
+/**************************************/
+/***** BUFFER CLASS IMPLEMENTATION*****/
+/******vvvvvvvvvvvvvvvvvvvvvvvvvv******/
+
+inputBuffer::inputBuffer() {
+  _buffer = (char *)malloc(_size);
+  if (_buffer) {
+    _idx = 0;
+    flush();
+  }
+}
+
+
+bool inputBuffer::add(char c) {
+  if (_idx < _size) {
+    _buffer[_idx] = c;
+    _idx++;
+    return true;
+  }
+  return false;
+}
+
+
+bool inputBuffer::add(char * buf, size_t bsize) {
+  if (!bsize) return false;
+  if (bsize < _size) {
+    size_t i;
+    for (i=0; i<bsize; i++){
+      if ( !add(buf[i]) ) return false; 
+    }
+    _idx += i;
+    return true;
+  }
+  return false;
+}
+
+
+char inputBuffer::getChar(size_t pos) {
+  if (pos <= _idx) return _buffer[pos];
+  return '\0';
+}
+
+
+char * inputBuffer::data() {
+  return _buffer;
+}
+
+
+void inputBuffer::flush() {
+  memset(_buffer, '\0', _size);
+  _idx = 0;
+}
+
+
+bool inputBuffer::isFull() {
+  if (_idx == _size) return true;
+  return false;
+}
+
+
+/***** Is this a command? *****/
+bool inputBuffer::hasCmd() {
+  if (_buffer[0] == PLUS && _buffer[1] == PLUS) {
+#ifdef DEBUG_PARSER
+    DB_PRINT(F("Command detected."), "");
+#endif
+    return true;
+  }
+  return false;
+}
+
+
+size_t inputBuffer::count() {
+  return _idx;
+}
+
+
+size_t inputBuffer::size() {
+  return _size;
+}
+
+
+void inputBuffer::destroy() {
+  free(_buffer);
+}
+
+
+/******^^^^^^^^^^^^^^^^^^^^^^^^^^^******/
+/***** BUFFER CLASS IMPLEMENTATION *****/
+/***************************************/
+
+
+
+
 
 /***************************************/
 /***** Serial Port implementations *****/
 /***************************************/
+
+
 
 
 /****************************/ 
@@ -117,22 +230,9 @@ int DEVNULL::lastByte()
 
   #endif
 
-
   void printHex(uint8_t byteval) {
-    size_t s = sizeof(unsigned int) * 4;
-//    size_t xlen;
-    char x[s] = {'\0'};
-//    xlen = snprintf(x, s, "%02X ", byteval);
-    snprintf(x, s, "%02X ", byteval);
-    debugPort.print(x);
-  }
-
-  void printHexAscii(uint8_t byteval) {
-    size_t s = sizeof(unsigned int) * 6;
-//    size_t xlen; 
-    char x[s] = {'\0'};
-//    xlen = snprintf(x, s, "%c [%02X]\n", byteval, byteval);
-    snprintf(x, s, "%c [%02X]\n", byteval, byteval);
+    char x[4] = {'\0'};
+    sprintf(x,"%02X ", byteval);
     debugPort.print(x);
   }
 

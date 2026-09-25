@@ -3,7 +3,7 @@
 #include "AR488_Eeprom.h"
 
 
-/***** AR488_Eeprom.cpp, ver. 0.01.06 (JW), 08/10/2025 *****/
+/***** AR488_Eeprom.cpp, ver. 0.02.03, 19/04/2026 *****/
 
 /*
  * EEPROM functions implementation
@@ -12,7 +12,7 @@
 
 /***** Forward declarations of internal functions *****/
 uint16_t getCRC16(uint8_t bytes[], size_t bsize);
-unsigned long int getCRC32(uint8_t bytes[], uint16_t bsize);
+unsigned long int getCRC32(uint8_t bytes[], size_t bsize);
 
 
 /********************************/
@@ -61,6 +61,7 @@ void epErase() {
  * cfg = config data union object
  * csize = size of config data object
  */
+/*
 void epWriteData(uint8_t cfgdata[], size_t cfgsize) {
   uint16_t crc;
   uint16_t i = 0;
@@ -72,8 +73,10 @@ void epWriteData(uint8_t cfgdata[], size_t cfgsize) {
   // Write CRC
   crc = getCRC16(cfgdata, cfgsize);
   EEPROM.put(0, crc);
-  // Commit write to Flash
 }
+*/
+
+
 
 
 /***** Read data from EEPROM (with CRC check) *****/
@@ -82,7 +85,9 @@ void epWriteData(uint8_t cfgdata[], size_t cfgsize) {
  * cfg = config data union object
  * csize = size of config data object
  */
+/*
 bool epReadData(uint8_t cfgdata[], size_t cfgsize) {
+//bool epReadData(GPIBconf cfgdata, size_t cfgsize) {
   uint16_t crc1;
   uint16_t crc2;
 
@@ -100,6 +105,10 @@ bool epReadData(uint8_t cfgdata[], size_t cfgsize) {
     return false;
   }
 }
+*/
+
+
+
 
 
 bool isEepromClear(){
@@ -168,7 +177,9 @@ void epErase() {
  * cfg = config data union object
  * csize = size of config data object
  */
-void epWriteData(uint8_t cfgdata[], size_t cfgsize) {
+/*
+//void epWriteData(uint8_t cfgdata[], size_t cfgsize) {
+void epWriteData(GPIBconf cfgdata, size_t cfgsize) {
   uint16_t crc;
 
   // Load EEPROM data from Flash
@@ -185,7 +196,7 @@ void epWriteData(uint8_t cfgdata[], size_t cfgsize) {
   EEPROM.commit();
   EEPROM.end();
 }
-
+*/
 
 /***** Read data from EEPROM (with CRC check) *****/
 /*
@@ -193,7 +204,9 @@ void epWriteData(uint8_t cfgdata[], size_t cfgsize) {
  * cfg = config data union object
  * csize = size of config data object
  */
-bool epReadData(uint8_t cfgdata[], size_t cfgsize) {
+/* 
+//bool epReadData(uint8_t cfgdata[], size_t cfgsize) {
+bool epReadData(GPIBconf cfgdata, size_t cfgsize) {
   uint16_t crc1;
   uint16_t crc2;
 
@@ -214,7 +227,7 @@ bool epReadData(uint8_t cfgdata[], size_t cfgsize) {
     return false;
   }
 }
-
+*/
 
 bool isEepromClear(){
   int16_t crc = 0;
@@ -242,7 +255,7 @@ bool isEepromClear(){
 
 
 /***** Generate a CRC *****/
-
+/*
 unsigned long int getCRC32(uint8_t bytes[], size_t bsize) {
 
   const unsigned long crc_table[16] = {
@@ -260,7 +273,8 @@ unsigned long int getCRC32(uint8_t bytes[], size_t bsize) {
   }
   return crc;
 }
-
+*/
+/*
 uint16_t getCRC16(uint8_t bytes[], size_t bsize){
   uint8_t x;
   uint16_t crc = 0xFFFF;
@@ -272,3 +286,5 @@ uint16_t getCRC16(uint8_t bytes[], size_t bsize){
   }
   return crc;
 }
+*/
+

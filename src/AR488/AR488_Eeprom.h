@@ -1,7 +1,9 @@
 #ifndef AR488_EEPROM_H
 #define AR488_EEPROM_H
 
+#include <EEPROM.h>
 #include "AR488_Config.h"
+#include "AR488_GPIBbus.h"
 
 
 #if defined(ESP8266) || defined(ESP32)
@@ -11,7 +13,7 @@
 #endif
 
 
-/***** AR488_Eeprom.h, ver. 0.01.06, 08/10/2025 *****/
+/***** AR488_Eeprom.h, ver. 0.02.03, 19/04/2026 *****/
 
 /*
  * EEPROM SIZES:
@@ -42,10 +44,132 @@ const uint16_t eesize = EESIZE;
 
 
 void epErase();
-void epWriteData(uint8_t cfgdata[], size_t cfgsize);
-bool epReadData(uint8_t cfgdata[], size_t cfgsize);
 void epViewData(Stream& outputStream);
 bool isEepromClear();
+
+
+#if defined(__AVR__) || defined (ARDUINO_ARCH_RENESAS)
+
+  template <typename T> void epWriteData(const T& cfgdata) {
+    const byte * p = (const byte*) &cfgdata; 
+    uint16_t crc;
+ 
+    // Write data
+    for (size_t i=0; i<sizeof(cfgdata); i++){
+      EEPROM.update(i+EESTART,*p++);
+    }
+    // Write CRC
+    crc = getCRC16(cfgdata);
+    EEPROM.put(0, crc);
+  }
+
+  template <typename T> bool epReadData(const T& cfgdata) {
+    uint16_t crc1;
+    uint16_t crc2;
+    byte * p = (byte*) &cfgdata;
+
+    // Read CRC
+    EEPROM.get(0,crc1);
+    // Read data
+    for (size_t i=0; i<sizeof(cfgdata); i++){
+      *p++ = EEPROM.read(i+EESTART);
+    }
+    // Get CRC of config
+    crc2 = getCRC16(cfgdata);
+    if (crc1==crc2) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+#endif  // __AVR__) || ARDUINO_ARCH_RENESAS
+
+
+#if defined(ESP8266) || defined(ESP32)
+
+  template <typename T> void epWriteData(const T& cfgdata) {
+    const byte * p = (const byte*) &cfgdata; 
+    uint16_t crc;
+
+    // Load EEPROM data from Flash
+    EEPROM.begin(EESIZE);
+    // Write data
+    for (size_t i=0; i<sizeof(cfgdata); i++){
+      EEPROM.write(i+EESTART,*p++);
+    }
+    // Write CRC
+    crc = getCRC16(cfgdata);
+    EEPROM.put(0, crc);
+    // Commit write to Flash
+    EEPROM.commit();
+    EEPROM.end();
+
+  }
+
+  template <typename T> bool epReadData(const T& cfgdata) {
+    uint16_t crc1;
+    uint16_t crc2;
+    byte * p = (byte*) &cfgdata;
+
+    // Load EEPROM data from Flash
+    EEPROM.begin(EESIZE);
+    // Read CRC
+    EEPROM.get(0,crc1);
+    // Read data
+    for (size_t i=0; i<sizeof(cfgdata); i++){
+      *p++ = EEPROM.read(i+EESTART);
+    }
+    EEPROM.end();
+    // Get CRC of config
+    crc2 = getCRC16(cfgdata);
+    if (crc1==crc2) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+#endif  // ESP8266 || ESP32
+
+
+  template <typename T> uint16_t getCRC16(const T& cfgdata){
+    uint8_t x;
+    uint16_t crc = 0xFFFF;
+    const byte * p = (const byte*) &cfgdata;
+
+    for (size_t idx=0; idx<sizeof(cfgdata); ++idx) {
+      x = crc >> 8 ^ *p;
+      x ^= x>>4;
+      crc = (crc << 8) ^ ((uint16_t)(x << 12)) ^ ((uint16_t)(x <<5)) ^ ((uint16_t)x);
+      p++;
+    }
+
+    return crc;
+  }
+
+
+  template <typename T> unsigned long int getCRC32(const T& cfgdata) {
+
+  const unsigned long crc_table[16] = {
+    0x00000000, 0x1db71064, 0x3b6e20c8, 0x26d930ac,
+    0x76dc4190, 0x6b6b51f4, 0x4db26158, 0x5005713c,
+    0xedb88320, 0xf00f9344, 0xd6d6a3e8, 0xcb61b38c,
+    0x9b64c2b0, 0x86d3d2d4, 0xa00ae278, 0xbdbdf21c
+  };
+  unsigned long crc = ~0L;
+  const byte * p = (const byte*) &cfgdata;
+
+  for (size_t idx=0; idx<sizeof(cfgdata); ++idx) {
+    crc = crc_table[(crc ^ *p) & 0x0f] ^ (crc >> 4);
+    crc = crc_table[(crc ^ (*p >> 4)) & 0x0f] ^ (crc >> 4);
+    crc = ~crc;
+    p++;
+  }
+  return crc;
+}
+
+
 
 
 #endif  // defined (__AVR__) || defined (ESP32) || defined (ARDUINO_ARCH_RENESAS)

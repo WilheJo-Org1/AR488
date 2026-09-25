@@ -6,7 +6,7 @@
 #include "AR488_Config.h"
 
 
-/***** AR488_Hardware.h, ver. 0.53.26, 08/10/2025 *****/
+/***** AR488_Hardware.h, ver. 0.53.42 (JW), 25/09/2026 *****/
 
 
 ///=================================///
@@ -352,8 +352,8 @@ uint8_t getMcpIntAReg();
 #ifdef POE_ETHERNET_GPIB_ADAPTOR
 
 uint8_t reverseBits(uint8_t dbyte);
-uint8_t readPortPullupReg(PORT_t port);
-void setPortPullupBits(PORT_t port, uint8_t reg);
+uint8_t readPortPullupReg(PORT_t& port);
+void setPortPullupBits(PORT_t& port, uint8_t reg);
 
 /***** KOFEN's POE Ethernet Gpib Adaptor pinout *****/
 #define DIO1_PIN  22  /* GPIB 1  : PORTD bit 0 */
@@ -384,11 +384,13 @@ void setPortPullupBits(PORT_t port, uint8_t reg);
 /***********************************/
 /***** ESP32 LAYOUT DEFINITION *****/
 /***** vvvvvvvvvvvvvvvvvvvvvvv *****/
-#ifdef ESP32_DEVKIT1_WROOM_32
+#ifdef ESP32_DEVKIT1_WROOM
+
+#define ESP32_NATIVE_FUNC
 
 // Pin numbers represent GPIOnum
 
-#define ESP32_FUNCTIONS
+#define ESP32_NATIVE_FUNC
 
 #define DIO1_PIN  32   /* GPIB 1  */
 #define DIO2_PIN  33   /* GPIB 2  */
@@ -421,6 +423,8 @@ void setPortPullupBits(PORT_t port, uint8_t reg);
 /***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
 #ifdef ESP32_TTGO_T8_161
 
+#define ESP32_ARDUINO_FUNC
+
 #define DIO1_PIN  34   /* GPIB 1  */
 #define DIO2_PIN  35   /* GPIB 2  */
 #define DIO3_PIN  32   /* GPIB 3  */
@@ -451,6 +455,8 @@ void setPortPullupBits(PORT_t port, uint8_t reg);
 /***** ESP32_ESP32DEV LAYOUT DEFINITION *****/
 /***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
 #ifdef ESP32_ESP32DEV
+
+#define ESP32_ARDUINO_FUNC
 
 #define DIO1_PIN  33   /* GPIB 1  */
 #define DIO2_PIN  32   /* GPIB 2  */
@@ -483,6 +489,8 @@ void setPortPullupBits(PORT_t port, uint8_t reg);
 /***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
 #ifdef ESP32_LOLIN32_161
 
+#define ESP32_ARDUINO_FUNC
+
 #define DIO1_PIN  32   /* GPIB 1  */
 #define DIO2_PIN  33   /* GPIB 2  */
 #define DIO3_PIN  25   /* GPIB 3  */
@@ -514,6 +522,8 @@ void setPortPullupBits(PORT_t port, uint8_t reg);
 /***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
 #ifdef ESP32_S2_161
 
+#define ESP32_ARDUINO_FUNC
+
 #define DIO1_PIN   1   /* GPIB 1  */
 #define DIO2_PIN   2   /* GPIB 2  */
 #define DIO3_PIN   3   /* GPIB 3  */
@@ -539,10 +549,12 @@ void setPortPullupBits(PORT_t port, uint8_t reg);
 /***********************************************/
 
 
+
 /***********************************************/
 /***** ESP32_Wilhelm_AR488_ESP32S2_Rx LAYOUT DEFINITIONS *****/
-/***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
+/***********************************************/
 #ifdef ESP32_Wilhelm_AR488_ESP32S2_R4
+
 #define DIO1_PIN   8    /* GPIB  8 */
 #define DIO2_PIN   9    /* GPIB  9 */
 #define DIO3_PIN   10   /* GPIB 10 */
@@ -586,9 +598,11 @@ void setPortPullupBits(PORT_t port, uint8_t reg);
 #define ATN_PIN    36   /* GPIB 36 */
 
 #endif // ESP32_Wilhelm_AR488_ESP32S2_R5
-/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***********************************************/
 /***** ESP32_Wilhelm_AR488_ESP32S2_Rx LAYOUT DEFINITIONS *****/
 /***********************************************/
+
+
 
 /***************************************/
 /***** RAS PICO LAYOUT 1 DEFINITION *****/
@@ -721,6 +735,40 @@ void gpioFuncList();
 
 
 
+/****************************************/
+/***** RAS PICO LAYOUT 5 DEFINITION *****/
+/***** vvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
+#ifdef RAS_PICO_L5
+
+#define RAS_PICO_LAUTO
+
+void gpioFuncList();
+
+#define DIO1_PIN  10   /* GPIB 1  */
+#define DIO2_PIN  11   /* GPIB 2  */
+#define DIO3_PIN  12   /* GPIB 3  */
+#define DIO4_PIN  13   /* GPIB 4  */
+#define DIO5_PIN  14   /* GPIB 13 */
+#define DIO6_PIN  15   /* GPIB 14 */
+#define DIO7_PIN  20   /* GPIB 15 */
+#define DIO8_PIN  21   /* GPIB 16 */
+
+#define IFC_PIN    9   /* GPIB 9  */
+#define NDAC_PIN   8   /* GPIB 8  */
+#define NRFD_PIN   7   /* GPIB 7  */
+#define DAV_PIN    6   /* GPIB 6  */
+#define EOI_PIN    5   /* GPIB 5  */
+#define REN_PIN    3   /* GPIB 17 */
+#define SRQ_PIN    4   /* GPIB 10 */
+#define ATN_PIN    2   /* GPIB 11 */
+
+#endif // RAS_PICO_L5
+/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***** RAS PICO LAYOUT 5 DEFINITION *****/
+/****************************************/
+
+
+
 /*********************************************/
 /***** NANO R4 RENESAS LAYOUT DEFINITION *****/
 /***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
@@ -755,24 +803,40 @@ void gpioFuncList();
 
 
 
-/**************************************/
-/***** ESP32 DEFINITIONS SECTION *****/
-/***** vvvvvvvvvvvvvvvvvvvvvvvvvv *****/
-#ifdef ESP32_FUNCTIONS
+/****************************************/
+/***** TEENSY 4.1 LAYOUT DEFINITION *****/
+/***** vvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
+#ifdef IMXRT1062_TEENSY41_01
 
-//#include <driver/gpio.h>
-#include <esp32-hal-gpio.h>
-#include <esp32-hal-matrix.h>
-#include <esp32/rom/gpio.h>
-#include <hal/gpio_hal.h>
-#include <soc/soc.h>
+/***** NOTE: Teensy 4.1 board *****/
+#define DIO1_PIN  23  /* GPIB 1  : AD_B1_09 : GPIO1_25 */
+#define DIO2_PIN  22  /* GPIB 2  : AD_B1_08 : GPIO1_24 */
+#define DIO3_PIN  21  /* GPIB 3  : AD_B1_11 : GPIO1_27 */
+#define DIO4_PIN  20  /* GPIB 4  : AD_B1_10 : GPIO1_26 */
+#define DIO5_PIN  19  /* GPIB 13 : AD_B1_00 : GPIO1_16 */
+#define DIO6_PIN  18  /* GPIB 14 : AD_B1_01 : GPIO1_17 */
+#define DIO7_PIN  17  /* GPIB 15 : AD_B1_06 : GPIO1_22 */
+#define DIO8_PIN  16  /* GPIB 16 : AD_B1_07 : GPIO1_23 */
 
-unsigned long setRegisterMask(const uint8_t bus[]);
+#define IFC_PIN   15  /* GPIB 9  : AD_B1_03 : GPIO1_19 */
+#define NDAC_PIN  14  /* GPIB 8  : AD_B1_02 : GPIO1_18 */
+#define NRFD_PIN  41  /* GPIB 7  : AD_B1_05 : GPIO1_21 */
+#define DAV_PIN   40  /* GPIB 6  : AD_B1_04 : GPIO1_20 */
+#define EOI_PIN   39  /* GPIB 5  : AD_B1_13 : GPIO1_29 */
 
-#endif  // ESP32_FUNCTIONS
-/***** ^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
-/***** ESP32 DEFINITIONS SECTION *****/
-/*************************************/
+#define SRQ_PIN   38  /* GPIB 10 : AD_B1_12 : GPIO1_28 */
+#define REN_PIN   26  /* GPIB 17 : AD_B1_14 : GPIO1_30 */
+#define ATN_PIN   27  /* GPIB 11 : AD_B1_15 : GPIO1_31 */
+
+#define PIN_PULLUP_ENABLE   IOMUXC_PAD_PUS(3) | IOMUXC_PAD_PUE | IOMUXC_PAD_PKE | IOMUXC_PAD_DSE(6)
+#define PIN_PULLUP_DISABLE  ~IOMUXC_PAD_PUE & ~IOMUXC_PAD_PKE
+#define PIN_SION_ENABLE  (1UL<<4)
+#define PIN_SION_DISABLE  ~(1UL<<4)
+
+#endif  // IMXRT1062_TEENSY41_01 
+/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***** TEENSY 4.1 LAYOUT DEFINITION *****/
+/****************************************/
 
 
 
@@ -780,7 +844,17 @@ unsigned long setRegisterMask(const uint8_t bus[]);
 /***** GLOBAL DEFINITIONS SECTION *****/
 /***** vvvvvvvvvvvvvvvvvvvvvvvvvv *****/
 
-void readyGpibDbus();
+#if defined (AR488_CUSTOM)
+  #if defined (ESP32)
+    #define ESP32_NATIVE_FUNC
+  #elif defined (ARDUINO_ARCH_RP2040)
+    #define RAS_PICO_LAUTO
+  #else
+    #define AR488_CUSTOM_DEFAULT
+  #endif
+#endif
+
+void readyGpibDbus(uint8_t state = INPUT_PULLUP);
 uint8_t readGpibDbus();
 void setGpibDbus(uint8_t db);
 //void setGpibState(uint8_t bits, uint8_t mask, uint8_t mode);
@@ -797,6 +871,13 @@ uint8_t getGpibPinState(uint8_t pin);
   void initRpGpioPins();
 #endif
 
+#if defined(ESP32)
+  void initEspGpioPins();
+#endif
+
+#if defined(__IMXRT1062__) && not defined(AR488_CUSTOM) // Teensy 4.1
+  void initTsyGpioPins();
+#endif
 
 /***** ^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
 /***** GLOBAL DEFINITIONS SECTION *****/

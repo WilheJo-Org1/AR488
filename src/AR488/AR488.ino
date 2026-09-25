@@ -14,7 +14,7 @@
 #include "AR488_Eeprom.h"
 
 
-/***** FWVER "AR488 GPIB controller, ver. 0.53.26 (JW), 08/10/2025" *****/
+/***** FWVER "AR488 GPIB controller, ver. 0.53.46 (JW), 25/09/2026" *****/
 
 /*
   Arduino IEEE-488 implementation by John Chajecki
@@ -211,58 +211,58 @@ static const char cmdHelp[] PROGMEM = {
 
 
 static const char cmdHelpPrologix[] PROGMEM = {
-  "\nPrologix Compatible Commands:\n"
-  "addr:\tDisplay/set device address\n"
-  "auto:\tAutomatically request talk and read response\n"
-  "clr:\tSend Selected Device Clear to current GPIB address\n"
-  "eoi:\tEnable/disable assertion of EOI signal\n"
-  "eor:\tShow or set end of receive character(s)\n"
-  "eos:\tSpecify GPIB termination character\n"
+  "Prologix Compatible Commands >\n"
+  "addr:\t\tDisplay/set device address\n"
+  "auto:\t\tAutomatically request talk and read response\n"
+  "clr:\t\tSend Selected Device Clear to current GPIB address\n"
+  "eoi:\t\tEnable/disable assertion of EOI signal\n"
+  "eor:\t\tShow or set end of receive character(s)\n"
+  "eos:\t\tSpecify GPIB termination character\n"
   "eot_char:\tSet character to append to USB output when EOT enabled\n"
   "eot_enable:\tEnable/Disable appending user specified character to USB output on EOI detection\n"
-  "help:\tThis message\n"
-  "ifc:\tAssert IFC signal for 150 miscoseconds - make AR488 controller in charge\n"
-  "llo:\tLocal lockout - disable front panel operation on instrument\n"
-  "loc:\tEnable front panel operation on instrument\n"
-  "lon:\tPut controller in listen-only mode (listen to all traffic)\n"
-  "mode:\tSet the interface mode (1=controller/0=device)\n"
-  "read:\tRead data from instrument\n"
+  "help:\t\tThis message\n"
+  "ifc:\t\tAssert IFC signal for 150 miscoseconds - make AR488 controller in charge\n"
+  "llo:\t\tLocal lockout - disable front panel operation on instrument\n"
+  "loc:\t\tEnable front panel operation on instrument\n"
+  "lon:\t\tPut controller in listen-only mode (listen to all traffic)\n"
+  "mode:\t\tSet the interface mode (1=controller/0=device)\n"
+  "read:\t\tRead data from instrument; e.g. currently addressed > ++read; read from addr > ++read @22\n"
   "read_tmo_ms:\tRead timeout specified between 1 - 3000 milliseconds\n"
-  "rst:\tReset the controller\n"
+  "rst:\t\tReset the controller\n"
   "savecfg:\tSave configration\n"
-  "spoll:\tSerial poll the addressed host or all instruments\n"
-  "srq:\tReturn status of srq signal (1-srq asserted/0-srq not asserted)\n"
+  "spoll:\t\tSerial poll the addressed host or all instruments\n"
+  "srq:\t\tReturn status of srq signal (1-srq asserted/0-srq not asserted)\n"
   "status:\tSet the status byte to be returned on being polled (bit 6 = RQS, i.e SRQ asserted)\n"
-  "trg:\tSend trigger to selected devices (up to 15 addresses)\n"
-  "ver:\tDisplay firmware version\n"
+  "trg:\t\tSend trigger to selected devices (up to 15 addresses)\n"
+  "ver:\t\tDisplay firmware version\n"
 };
 
 
 static const char cmdHelpExtended[] PROGMEM = {
-  "/nExtended custom commands:"
-  "aspoll:\tSerial poll all instruments (alias: ++spoll all)\n"
-  "dcl:\tSend unaddressed (all) device clear  [power on reset] (is the rst?)\n"
+  "Extended custom commands >\n"
+  "aspoll:\tSerial poll all instruments (alias = ++spoll all)\n"
+  "dcl:\t\tSend unaddressed (all) device clear  [power on reset] (is the rst?)\n"
   "default:\tSet configuration to controller default settings\n"
-  "id:\tShow interface ID information - see also: 'id name'; 'id serial'; 'id verstr'\n"
+  "flags:\t\tDisplay handhsaking flags - bits 0 1 & 2 control Ready, ReadOk and SendOK\n"
+  "id:\t\tShow interface ID information - see also > 'id name'; 'id serial'; 'id verstr'\n"
   "id name:\tShow/Set the name of the interface\n"
   "id serial:\tShow/Set the serial number of the interface\n"
   "id verstr:\tShow/Set the version string sent in reply to ++ver e.g. \"GPIB-USB\"). Max 47 chars, excess truncated.\n"
-  "idn:\tEnable/Disable reply to *idn? (disabled by default)\n"
-  "macro:\tRun a macro (if macro support is compiled)\n"
-  "fndl:\tFind listners\n"
-  "ppoll:\tConduct a parallel poll\n"
-  "ren:\tAssert or Unassert the REN signal\n"
+  "idn:\t\tEnable/Disable reply to *idn? (disabled by default)\n"
+  "macro:\t\tRun a macro (if macro support is compiled)\n"
+  "fndl:\t\tFind listners\n"
+  "ppoll:\t\tConduct a parallel poll\n"
+  "ren:\t\tAssert or Unassert the REN signal\n"
   "repeat:\tRepeat a given command and return result\n"
-  "secread:\tRead from a secondary address\n"
-  "secsend:\tSend data or command to a secondary address\n"
+  "send:\t\tSend to GPIB address; e.g. ++send 22,*idn?\n"
   "setvstr:\tDEPRECATED - see id verstr\n"
   "srqauto:\tAutomatically conduct serial poll when SRQ is asserted\n"
-  "tct:\tSignal remote device to take control\n"
-  "ton:\tPut controller in talk-only mode (send data only)\n"
-  "unl:\tUnlisten the GPIB bus\n"
-  "unt:\tUntalk the GPIB bus"
+  "tct:\t\tSignal remote device to take control\n"
+  "ton:\t\tPut controller in talk-only mode (send data only)\n"
+  "unl:\t\tUnlisten the GPIB bus\n"
+  "unt:\t\tUntalk the GPIB bus\n"
   "verbose:\tVerbose (human readable) mode\n"
-  "xdiag:\tBus diagnostics (see the doc)\n"
+  "xdiag:\t\tBus diagnostics (see the doc)\n"
 };
 
 
@@ -456,12 +456,16 @@ void setup() {
   //(will only read if previous config has already been saved)
   if (!isEepromClear()) {
 //DB_RAW_PRINTLN(F("EEPROM has data."));
-    if (!epReadData(gpibBus.cfg.db, GPIB_CFG_SIZE)) {
+//    if (!epReadData(gpibBus.cfg.db, GPIB_CFG_SIZE)) {
+//    if ( !epReadData(gpibBus.cfg, gpibBus.getCfgSize()) ) {
+    if ( !epReadData(gpibBus.cfg) ) {
       // CRC check failed - config data does not match EEPROM
 //DB_RAW_PRINTLN(F("CRC check failed. Erasing EEPROM...."));
       epErase();
       gpibBus.setDefaultCfg();
-      epWriteData(gpibBus.cfg.db, GPIB_CFG_SIZE);
+//      epWriteData(gpibBus.cfg.db, GPIB_CFG_SIZE);
+//      epWriteData(gpibBus.cfg, gpibBus.getCfgSize() );
+      epWriteData(gpibBus.cfg);
 //DB_RAW_PRINTLN(F("EEPROM data set to default."));
     }
   }
@@ -490,7 +494,6 @@ void setup() {
     #endif
     #ifdef SN7516X_SC
       digitalWrite(SN7516X_SC, LOW);
-  bool eoiDetected = false;
     #endif
   }
 #endif
@@ -859,6 +862,7 @@ bool isIdnQuery(char *buffr) {
 
 /***** Is the parameter a number *****/
 bool isNumber(char *numstr){
+  if (numstr == nullptr) return false;
   uint8_t numlen = strlen(numstr);
   for (uint8_t i=0; i<numlen; i++){
     if (numstr[i]<48 || numstr[i]>57) return false;
@@ -1118,50 +1122,14 @@ void printHex(char *buffr, int dsize) {
 }
 */
 
-/***** Check whether a parameter is in range *****/
-/* Convert string to integer and check whether value is within
- * lowl to higl inclusive. Also returns converted text in param
- * to a uint16_t integer in rval. Returns true if successful, 
- * false if not
-*/
-/*
-bool notInRange(char *param, uint16_t lowl, uint16_t higl, uint16_t &rval) {
-
-  // Null string passed?
-  if (strlen(param) == 0) return true;
-
-  // Convert to integer
-  rval = 0;
-
-  // Param contains digits only ?
-  if (isNumber(param)) {
-    rval = atoi(param);
-  }else{
-    return false;
-  }
-
-  // Check range
-  if (rval < lowl || rval > higl) {
-    errorMsg(2);
-    if (isVerb) {
-      dataPort.print(F("Valid range is between "));
-      dataPort.print(lowl);
-      dataPort.print(F(" and "));
-      dataPort.println(higl);
-    }
-    return true;
-  }
-  return false;
-}
-*/
-
 
 bool notInRange(char *param, uint16_t lowl, uint16_t higl, uint16_t &rval) {
 
   unsigned long val = 0;
 
   // Null string passed?
-  if (strlen(param) == 0) return true;
+//  if (strlen(param) == 0) return true;
+  if (param == nullptr) return true;
 
   // Is it numeric ?
   if (!isNumber(param)) return true;
@@ -1514,7 +1482,6 @@ void read_h(char *params) {
   uint8_t pri = gpibBus.cfg.paddr;
   uint8_t sec = gpibBus.cfg.saddr;
   uint16_t val = 0xFF;
-//  char * param;
 
   // Clear read flags (Global vars)
   readWithEoi = false;
@@ -1552,71 +1519,6 @@ void read_h(char *params) {
     if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
     gpibBus.unAddressDevice();
   }
-
-/*
-  // Read any parameters
-  if (params != NULL) {
-
-    // 1st parameter ( eoi, terminator character or address value ? )
-    param = strtok(params, " ,\t");
-    if (isNumber(param)) {
-      // Primary address in range ?
-      val = strtoul(param, NULL, 10);
-      if (val>30) {
-        errorMsg(2);
-        return;
-      }
-      pri = (uint8_t)val;
-
-      // 2nd parameter ( * or address value )
-      param = strtok(NULL, " ,\t");
-      if (isNumber(param)) {
-        val = strtoul(param, NULL, 10);
-        if (val<31) val = val + 0x60;
-        if (val<0x60 || val>0x7E) {
-          errorMsg(2);
-          return;
-        }
-        sec = (uint8_t)val;
-
-        // 3rd parameter
-        param = strtok(NULL, " ,\t");
-
-      }else{
-        sec = 0xFF;
-      }
-
-    }
-    
-    // Check for eoi or terminator character
-    if (strlen(param) > 3) {
-      errorMsg(2);
-      return;
-    } else if (strncasecmp(params, "eoi", 3) == 0) { // Read with eoi detection
-      readWithEoi = true;
-    } else { // Assume ASCII character given and convert to an 8 bit byte
-      readWithEndByte = true;
-      endByte = atoi(param);
-    }
-  }
-
-//DB_PRINT(F("readWithEoi:     "), readWithEoi);
-//DB_PRINT(F("readWithEndByte: "), readWithEndByte);
-
-  // Address device to talk
-  if (gpibBus.haveAddressedDevice() != TOTALK) gpibBus.addressDevice(pri, sec, TOTALK);
-
-  // Read data
-  if (gpibBus.cfg.amode == 3) {
-    // In auto continuous mode we set this flag to indicate we are ready for continuous read
-    autoRead = true;
-  } else {
-    // If auto mode is disabled we do a single read
-    gpibBus.receiveData(dataPort, readWithEoi, readWithEndByte, endByte);
-    if (gpibBus.cfg.hflags & 0x02) showFlag(F("Read^OK"));
-    gpibBus.unAddressDevice();
-  }
-*/
 
 }
 
@@ -1696,13 +1598,13 @@ void ifc_h() {
 
 /***** Send a trigger command *****/
 void trg_h(char *params) {
-  const uint8_t maxparam = 15;
+  const uint8_t maxparam = 32;
   char *param;
   uint8_t addrs[maxparam] = {0};
   uint16_t val = 0;
   uint8_t cnt = 0;
 
-  addrs[0] = addrs[0]; // Meaningless as both are zero but defaults compiler warning!
+  addrs[0] = addrs[0]; // Meaningless as both are zero but defeats compiler warning!
 
   // Read parameters
   if (params == NULL) {
@@ -1720,7 +1622,7 @@ void trg_h(char *params) {
       if (param == NULL) {
         break;  // Stop when there are no more parameters
       }else{    
-        if (notInRange(param, 1, 30, val)) return;
+        if (notInRange(param, 1, 31, val)) return;
         addrs[cnt] = (uint8_t)val;
         cnt++;
       }
@@ -1782,7 +1684,8 @@ void rst_h() {
 /***** Serial Poll Handler *****/
 void spoll_h(char *params) {
   char *param;
-  uint8_t addrs[15];
+  const uint8_t acnt = 32;
+  uint8_t addrs[acnt] = {0};
   uint8_t sb = 0;
   enum gpibHandshakeState state;
   uint8_t j = 0;
@@ -1790,25 +1693,20 @@ void spoll_h(char *params) {
   bool all = false;
   bool eoiDetected = false;
 
-  // Initialise address array
-  for (int i = 0; i < 15; i++) {
-    addrs[i] = 0;
-  }
-
   // Read parameters
   if (params == NULL) {   // No parameters - trigger addressed device only
     addrs[0] = gpibBus.cfg.paddr;
     j = 1;
   } else if (strncasecmp(params, "all", 3) == 0) {   // ALL parameter given
     all = true;
-    j = 30;
+    j = acnt;
     if (isVerb) dataPort.println(F("Serial poll of all devices requested..."));
   }
 
   if (j == 0) {
 
     // Read address parameters into array
-    while (j < 15) {
+    while (j < acnt) {
 
       if (j == 0) {
         param = strtok(params, " \t");
@@ -1832,7 +1730,7 @@ void spoll_h(char *params) {
       }
 
       // Valid GPIB address parameter ?
-      if (notInRange(param, 1, 30, addrval)) return;
+      if (notInRange(param, 1, 31, addrval)) return;
 
       // All good
       addrs[j] = (uint8_t)addrval;
@@ -1890,7 +1788,6 @@ void spoll_h(char *params) {
 
       // Set GPIB control to controller active listner state (ATN unasserted), clear databus and set to input
       gpibBus.setControls(CLAS);
-      gpibBus.clearDataBus();
 
       // Read the response byte (usually device status) using handshake - suppress EOI detection
       state = gpibBus.readByte(&sb, false, &eoiDetected);
@@ -1902,7 +1799,7 @@ void spoll_h(char *params) {
         gpibBus.setControls(CTAS);
 
         // Process response
-        if (j == 30) {
+        if (j == acnt) {
           // If all, return specially formatted response: SRQ:addr,status
           // but only when RQS bit set
           if (sb & 0x40) {
@@ -1989,7 +1886,8 @@ void stat_h(char *params) {
 /***** Save controller configuration *****/
 void save_h() {
 #ifdef E2END
-  epWriteData(gpibBus.cfg.db, GPIB_CFG_SIZE);
+//  epWriteData(gpibBus.cfg.db, GPIB_CFG_SIZE);
+  epWriteData(gpibBus.cfg);
   if (isVerb) dataPort.println(F("Settings saved."));
 #else
   dataPort.println(F("EEPROM not supported."));
@@ -2019,45 +1917,68 @@ void lon_h(char *params) {
 
 /***** Print help *****/
 bool printHelp(const char * help, char * keyword){
-//  char c, t;
-  char c;
-  char token[20];
-  uint8_t i;
+  uint8_t tksize = 20;
+  uint8_t hlnsize = 128;
+  char c = '\0';
+  char token[tksize];
+  char helpline[hlnsize];
+  uint8_t tcnt = 0;
+  size_t ccnt = 0;
   bool found = false;
+  size_t helplen = strlen_P(help);
 
-  i = 0;
-  for (size_t k = 0; k < strlen_P(help); k++) {
-    c = pgm_read_byte_near(help + k);
+  memset(token, '\0', tksize);
+  memset(helpline, '\0', hlnsize);
 
+  while (ccnt < helplen) {
 
-    if (i < 20) {
-      if(c == ':') {
-        token[i] = 0;
-        if((keyword == NULL) || (strcmp(token, keyword) == 0)) {
-          dataPort.print(F("++"));
-          dataPort.print(token);
-//          dataPort.print(c);
-          k++;
-          /*
-          t = pgm_read_byte_near(cmdHelp + k);
-          dataPort.print(F(" ["));
-          dataPort.print(t);
-          dataPort.print(F("]"));
-          */
-          i = 255; // means we need to print until \n
-        }
-        
-      } else {
-        token[i] = c;
-        i++;
+    while ( tcnt < hlnsize ) {
+
+      c = pgm_read_byte_near(help + ccnt);
+      ccnt++;
+
+      if (c == ':') {
+        helpline[tcnt] = '\0';
+        if (tcnt < tksize) strlcpy(token, helpline, tcnt+1);
+        tcnt = 0;
+      }else if (c == '\n') {
+        helpline[tcnt] = '\0';
+        break;
+      }else{
+        helpline[tcnt] = c;
+        tcnt++;
       }
-    } else if (i == 255) {
-      dataPort.print(c);
+
     }
-    if (c == '\n') {
-      i = 0;
+
+    if (token[0]) {
+
+      if (keyword) {
+        if ( (strncasecmp(token, keyword, strlen(keyword)) == 0) ) found = true;
+      }
+
+      if( (keyword == NULL) || found ) {
+        dataPort.print(F("++"));
+        dataPort.print(token);
+        dataPort.println(helpline);
+        memset(token, '\0', tksize);
+      }
+
+      if (found) return true;
+
+    }else{
+
+      if (keyword == NULL) {        // Print headers only of full help
+        dataPort.println(helpline);
+        dataPort.println();
+      }
+
     }
+
+    tcnt = 0;
+
   }
+
   return found;
 }
 
@@ -2070,20 +1991,23 @@ void help_h(char * params) {
   bool found = false;
 
   if (params != NULL) {
-    param = strtok(params, " ,\t");
-    if (strncasecmp(param, "prologix", 8) == 0) {
-      keyword = strtok(NULL, " ,\t");
+    param = strtok(params, " \t\n");
+    if (strncasecmp(param, "pro", 8) == 0) {
+      keyword = strtok(NULL, "\n");
       printHelp(cmdHelpPrologix, keyword);
-    }else if (strncasecmp(param, "extended", 8) == 0) {
-      keyword = strtok(NULL, " ,\t");
+    }else if (strncasecmp(param, "ext", 8) == 0) {
+      keyword = strtok(NULL, "\n");
       printHelp(cmdHelpExtended, keyword);
     }else{
-      printHelp(cmdHelpPrologix, param);
-      if (!found) printHelp(cmdHelpExtended, param);
+      found = printHelp(cmdHelpPrologix, param);
+      if (!found) found = printHelp(cmdHelpExtended, param);
+      if (!found) dataPort.println(F("Not found."));
     }
   }else{
     printHelp(cmdHelpPrologix, NULL);
+    dataPort.println();
     printHelp(cmdHelpExtended, NULL);
+    dataPort.println();
   }  
 }
 
@@ -2130,6 +2054,8 @@ void default_h(char *params) {
       errorMsg(2);
     }
   }
+  #else
+    (void)params;
   #endif
   gpibBus.setDefaultCfg();
 }
@@ -2139,7 +2065,7 @@ void default_h(char *params) {
 void eor_h(char *params) {
   uint16_t val;
   if (params != NULL) {
-    if (notInRange(params, 0, 15, val)) return;
+    if (notInRange(params, 0, 7, val)) return;
     gpibBus.cfg.eor = (uint8_t)val;
     if (isVerb) {
       dataPort.print(F("Set EOR to: "));
@@ -2426,13 +2352,14 @@ void xdiag_h(char *params){
   // Get first parameter (mode = 0 or 1)
   param = strtok(params, " ,\t");
 
-  if (strncasecmp(param, "pins", 4) == 0) {
-    printDbPinout();
-    printCtrlPinout();
-    return;
-  }
+  if (param != nullptr) {
 
-  if (param != NULL) {
+    if (strncasecmp(param, "pins", 4) == 0) {
+      printDbPinout();
+      printCtrlPinout();
+      return;
+    }
+
     if (strlen(param)<4){
       mode = atoi(param);
       if (mode>2) {
@@ -2440,11 +2367,14 @@ void xdiag_h(char *params){
         return;
       }
     }
+
   }
 
   // Get second parameter (8 bit byte)
   param = strtok(NULL, " \t");
-  if (param != NULL) {
+
+  if (param != nullptr) {
+
     if (strlen(param)<4){
       byteval = atoi(param);
     }
@@ -2689,8 +2619,9 @@ bool isRange(char * rangestr, size_t rsize, unsigned long values[2] ) {
 
 void fndl_h(char *params) {
   char *param;
+  const uint8_t amax = 32;
   uint16_t addrval = 0;
-  uint8_t addrList[15] = {0};
+  uint8_t addrList[amax] = {0};
   uint16_t tmo = gpibBus.cfg.rtmo;
   uint8_t acnt = 0;
   uint8_t i = 0;
@@ -2700,7 +2631,7 @@ void fndl_h(char *params) {
   bool list = false;
 
   // Initialise arrays
-  for (int i = 0; i < 15; i++) {
+  for (int i = 0; i < acnt; i++) {
     addrList[i] = 0;
   }
 
@@ -2708,32 +2639,29 @@ void fndl_h(char *params) {
   gpibBus.cfg.rtmo = 35;
 
   // Read parameters
-  if (params == NULL) {
+  if (params == nullptr) {
     // No parameters given - no action to be taken
-  //  errorMsg(1);
-  //  return;
-    j = 31; // Same as 'all'
-  }
-
-  // Is it a range?
-  if ( isRange(params, strlen(params), range) ) {
-    if (range[0]<30 && range[1]<31) {
-      i = (uint8_t)range[0];
-      j = (uint8_t)range[1] + 1;
-    }else{
-      errorMsg(2);
-      return;
+    j = amax; // Same as 'all'
+  }else{
+    // Is it a range?
+    if ( isRange(params, strlen(params), range) ) {
+      if (range[0]<30 && range[1]<31) {
+        i = (uint8_t)range[0];
+        j = (uint8_t)range[1] + 1;
+      }else{
+        errorMsg(2);
+        return;
+      }
     }
-  }
-
-  // Requested 'all'?
-  if ( strncasecmp(params, "all", 4) == 0) {
-    j = 31;
+    // Requested 'all'?
+    if ( strncasecmp(params, "all", 4) == 0) {
+      j = amax;
+    }
   }
 
   if (j==0) {
     // Read address parameters into array
-    while (j < 15) {
+    while (j < amax) {
       if (j == 0) {
         param = strtok(params, " ,\t");
       } else {
@@ -2756,7 +2684,7 @@ void fndl_h(char *params) {
       }
 
       // Valid range
-      if (notInRange(param, 0, 30, addrval)) return;
+      if (notInRange(param, 0, 31, addrval)) return;
       addrList[j] = (uint8_t)addrval;
       j++;
 
@@ -2782,9 +2710,6 @@ void fndl_h(char *params) {
       continue;
     }
 
-//Serial.print("PRI: ");
-//Serial.println(pri);
-
     // Send UNL + UNT + LAD (addressDevice function adds 0x20 to pri)
     if (gpibBus.addressDevice(pri, 0xFF, TOLISTEN) == ERR) {
       errorMsg(3);
@@ -2796,7 +2721,7 @@ void fndl_h(char *params) {
 
     if (gpibBus.isAsserted(NDAC_PIN)) {
  
-      if (acnt>0) Serial.print(',');
+      if (acnt>0) dataPort.print(',');
       dataPort.print(pri);
       acnt++;
 
@@ -2861,14 +2786,13 @@ void fndl_h(char *params) {
   pri, sec = GPIB addresses between 0 and 30
   data is optional
 */
-//void secsend_h(char *params) {
 void send_h(char *params) {
   char * param;
   uint8_t pri = 0xFF;
   uint8_t sec = 0xFF;
   uint16_t val;
 
-  if (params != NULL) {
+  if (params != nullptr) {
     // 1st parameter (must be an address value)
     param = strtok(params, " ,\t");
 
@@ -2895,6 +2819,11 @@ void send_h(char *params) {
 
     // 2nd parameter (secondary address value or data)
     param = strtok(NULL, " ,\t");
+    size_t plen = strlen(param);
+    if (!plen) {
+      errorMsg(2);
+      return;
+    }
 
     if (isNumber(param)) {
       // Secondary address in range ?
@@ -2911,18 +2840,10 @@ void send_h(char *params) {
 
     }
 
-    if (param[strlen(param)-1] == '?') isQuery = true;
+    if (param[plen-1] == '?') isQuery = true;
 
-
-/*
-Serial.println(pri);
-Serial.println(sec);
-Serial.println(param);
-*/
-
-//    gpibBus.unAddressDevice();
     gpibBus.addressDevice(pri, sec, TOLISTEN);
-    gpibBus.sendData(param, strlen(param));
+    gpibBus.sendData(param, plen);
 
     if ( (gpibBus.cfg.amode == 1) || ((gpibBus.cfg.amode == 2) && isQuery) ) {
       gpibBus.addressDevice(pri, sec, TOTALK);
@@ -3323,7 +3244,7 @@ bool device_unt_h(){
   // Clear addressed state flag and set controls to listen
   if (gpibBus.isDeviceAddressedToTalk()) {
     gpibBus.setControls(DIDS);
-    gpibBus.clearDataBus();
+//    gpibBus.clearDataBus();
     return true;
   }
   return false;

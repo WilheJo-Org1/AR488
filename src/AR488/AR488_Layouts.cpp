@@ -45,12 +45,20 @@
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  DDRD &= 0b11001111 ;
-  DDRC &= 0b11000000 ;
-  PORTD |= 0b00110000; // PORTD bits 5,4 input_pullup
-  PORTC |= 0b00111111; // PORTC bits 5,4,3,2,1,0 input_pullup
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    // Set data pins to output
+    DDRD |= 0b00110000;
+    DDRC |= 0b00111111;
+    PORTD |= 0b00110000; // PORTD bits 5,4 high
+    PORTC |= 0b00111111; // PORTC bits 5,4,3,2,1,0 high
+  } else {
+    // Set data pins to input
+    DDRD &= 0b11001111 ;
+    DDRC &= 0b11000000 ;
+    PORTD |= 0b00110000; // PORTD bits 5,4 input_pullup
+    PORTC |= 0b00111111; // PORTC bits 5,4,3,2,1,0 input_pullup
+  }
 }
 
 
@@ -158,9 +166,15 @@ uint8_t getGpibPinState(uint8_t pin){
 */
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  DDRF &= 0b00000000 ;
-  PORTF |= 0b11111111; // set PORTC bits to input_pullup
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    // Set data pins to output
+    DDRF |= 0b00000000;
+    PORTF |= 0b11111111; // set PORTF bits to high
+  } else {
+    DDRF &= 0b00000000 ;
+    PORTF |= 0b11111111; // set PORTF bits to input_pullup
+  }
 }
 
 
@@ -261,13 +275,22 @@ uint8_t getGpibPinState(uint8_t pin){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  DDRA &= 0b10101010 ;
-  DDRC &= 0b01010101 ;
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    // Set data pins to output
+    DDRA |= 0b01010101;
+    DDRC |= 0b10101010;
+    PORTA |= 0b01010101; // PORTA bits 6,4,2,0 high
+    PORTC |= 0b10101010; // PORTC bits 7,5,3,1 high
+    return;
+  } else {
+    // Set data pins to input
+    DDRA &= 0b10101010 ;
+    DDRC &= 0b01010101 ;
 
-  PORTA |= 0b01010101; // PORTA bits 6,4,2,0 input_pullup
-  PORTC |= 0b10101010; // PORTC bits 7,5,3,1 input_pullup
+    PORTA |= 0b01010101; // PORTA bits 6,4,2,0 input_pullup
+    PORTC |= 0b10101010; // PORTC bits 7,5,3,1 input_pullup
+  }
 }
 
 
@@ -435,14 +458,21 @@ uint8_t getGpibPinState(uint8_t pin){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    // Set data pins to output
+    DDRA |= 0b10101010;
+    DDRA |= 0b01010101;
+    PORTA |= 0b10101010; // PORTC bits 7,5,3,1 high
+    PORTC |= 0b01010101; // PORTA bits 6,4,2,0 high
+  } else {
+    // Set data pins to input
+    DDRA &= 0b01010101 ;
+    DDRC &= 0b10101010 ;
 
-  // Set data pins to input
-  DDRA &= 0b01010101 ;
-  DDRC &= 0b10101010 ;
-
-  PORTA |= 0b10101010; // PORTC bits 7,5,3,1 input_pullup
-  PORTC |= 0b01010101; // PORTA bits 6,4,2,0 input_pullup
+    PORTA |= 0b10101010; // PORTC bits 7,5,3,1 input_pullup
+    PORTC |= 0b01010101; // PORTA bits 6,4,2,0 input_pullup
+  }
 }
 
 
@@ -598,12 +628,21 @@ uint8_t getGpibPinState(uint8_t pin){
 */
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  DDRB  &= 0b10000001 ;
-  DDRD  &= 0b01111110 ;
-  PORTB |= 0b01111110; // PORTB bits 6,5,4,3,2,1 input_pullup
-  PORTD |= 0b10000001; // PORTD bits 7,0 input_pullup
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    // Set data pins to output
+    DDRB |= 0b01111110;
+    DDRD |= 0b10000001;
+    PORTB |= 0b01111110; // PORTC bits 7,5,3,1 high
+    PORTD |= 0b10000001; // PORTA bits 6,4,2,0 high
+  } else {
+    // Set data pins to input
+    DDRB  &= 0b10000001 ;
+    DDRD  &= 0b01111110 ;
+ 
+    PORTB |= 0b01111110; // PORTB bits 6,5,4,3,2,1 input_pullup
+    PORTD |= 0b10000001; // PORTD bits 7,0 input_pullup
+  }
 }
 
 
@@ -747,16 +786,25 @@ uint8_t getGpibPinState(uint8_t pin){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-
-  DDRC &= 0b10111111 ;
-  DDRD &= 0b11101111 ;
-  DDRF &= 0b00001100 ;
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    // Set data pins to output
+    DDRC |= 0b01000000;
+    DDRD |= 0b00010000;
+    DDRF |= 0b11110011;
+    PORTC |= 0b01000000; // PORTC bits 7,5,3,1 high
+    PORTD |= 0b00010000; // PORTA bits 6,4,2,0 high
+    PORTF |= 0b11110011; // PORTA bits 6,4,2,0 high
+  } else {
+   // Set data pins to input
+    DDRC &= 0b10111111 ;
+    DDRD &= 0b11101111 ;
+    DDRF &= 0b00001100 ;
  
-  PORTC |= 0b01000000; // PORTD bit 4 input_pullup
-  PORTD |= 0b00010000; // PORTD bit 6 input_pullup
-  PORTF |= 0b11110011; // PORTC bits 7,6,5,4,1,0 input_pullup
+    PORTC |= 0b01000000; // PORTD bit 4 input_pullup
+    PORTD |= 0b00010000; // PORTD bit 6 input_pullup
+    PORTF |= 0b11110011; // PORTC bits 7,6,5,4,1,0 input_pullup
+  }
 }
 
 
@@ -901,10 +949,16 @@ void mcpInit(){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  mcpByteWrite(MCPDIRB, 0b11111111);  // Port direction: 0 = output; 1 = input;
-  mcpByteWrite(MCPPUB, 0b11111111);   // 1 = Pullup resistors enabled
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (stat == OUTPUT) {
+    mcpByteWrite(MCPDIRB, 0b00000000);  // Port direction: 0 = output; 1 = input;
+    // Set output pins HIGH
+    mcpByteWrite(MCPPORTB, 0b11111111);
+  } else {
+    // Set data pins to input
+    mcpByteWrite(MCPDIRB, 0b11111111);  // Port direction: 0 = output; 1 = input;
+    mcpByteWrite(MCPPUB, 0b11111111);   // 1 = Pullup resistors enabled
+  }
 }
 
 
@@ -1085,13 +1139,21 @@ void mcpInterruptsEn(){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  DDRD &= 0b00000011;  
-  DDRC &= 0b11111100;  
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    // Set data pins to output
+    DDRD |= 0b11111100;
+    DDRC |= 0b00000011;
+    PORTD |= 0b11111100; // PORTC bits 7,5,3,1 high
+    PORTC |= 0b00000011; // PORTA bits 6,4,2,0 high
+  } else {
+    // Set data pins to input
+    DDRD &= 0b00000011;  
+    DDRC &= 0b11111100;  
   
-  PORTD |= 0b11111100; // PORTD bits 7, 6, 5, 4, 3, 2 input_pullup
-  PORTC |= 0b00000011; // PORTC bits 1, 0 input_pullup
+    PORTD |= 0b11111100; // PORTD bits 7, 6, 5, 4, 3, 2 input_pullup
+    PORTC |= 0b00000011; // PORTC bits 1, 0 input_pullup
+  }
 }
 
 
@@ -1213,12 +1275,21 @@ uint8_t getGpibPinState(uint8_t pin){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  DDRC &= 0b11000000;
-  DDRE &= 0b11110011;
-  PORTC |= 0b00111111; // PORTC bits 5,4,3,2,1,0 input_pullup
-  PORTE |= 0b00001100; // PORTE bits 3,2 input_pullup
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    // Set data pins to output
+    DDRC |= 0b00111111;
+    DDRE |= 0b00001100;
+    PORTC |= 0b00111111; // PORTC bits 7,5,3,1 high
+    PORTE |= 0b00001100; // PORTA bits 6,4,2,0 high
+  } else {
+    // Set data pins to input
+    DDRC &= 0b11000000;
+    DDRE &= 0b11110011;
+
+    PORTC |= 0b00111111; // PORTC bits 5,4,3,2,1,0 input_pullup
+    PORTE |= 0b00001100; // PORTE bits 3,2 input_pullup
+  }
 }
 
 
@@ -1331,7 +1402,7 @@ uint8_t getGpibPinState(uint8_t pin){
 */
 
 
-uint8_t readPortPullupReg(PORT_t port){
+uint8_t readPortPullupReg(PORT_t& port){
   uint8_t reg = 0;
   reg |= (port.PIN0CTRL & PORT_PULLUPEN_bm) >> 3;
   reg |= (port.PIN1CTRL & PORT_PULLUPEN_bm) >> 2;
@@ -1345,7 +1416,7 @@ uint8_t readPortPullupReg(PORT_t port){
 }
 
 
-void setPortPullupBits(PORT_t port, uint8_t reg){
+void setPortPullupBits(PORT_t& port, uint8_t reg){
   port.PIN0CTRL |= ((reg<<3) & PORT_PULLUPEN_bm);
   port.PIN1CTRL |= ((reg<<2) & PORT_PULLUPEN_bm);
   port.PIN2CTRL |= ((reg<<1) & PORT_PULLUPEN_bm);
@@ -1360,11 +1431,18 @@ void setPortPullupBits(PORT_t port, uint8_t reg){
 
 /***** Set the GPIB data bus to input pullup *****/
 
-void readyGpibDbus() {
-  // Set data pins to input
-  PORTD.DIR &= 0b00000000;
-  // Set PORTD bits to input_pullup
-  setPortPullupBits(PORTD, 0b11111111);
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    // Set data pins to output
+    PORTD.DIR &= 0b11111111;
+    // Set PORTD bits to high
+    PORTD.OUT = 0b11111111;
+  } else {
+    // Set data pins to input
+    PORTD.DIR &= 0b00000000;
+    // Set PORTD bits to input_pullup
+    setPortPullupBits(PORTD, 0b11111111);
+  }
 }
 
 
@@ -1442,42 +1520,306 @@ uint8_t getGpibPinState(uint8_t pin){
 /***********************************/
 /***** ESP32 LAYOUT DEFINITION *****/
 /***** vvvvvvvvvvvvvvvvvvvvvvv *****/
-#ifdef ESP32_DEVKIT1_WROOM_32
+#if defined(ESP32_NATIVE_FUNC)
 
-////////// INCOMPLETE AND UNTESTED //////////
+/***** Struct used to hold GPIO register values *****/
+struct gpioregister_t {
+  uint32_t reg0 = 0;
+  uint32_t reg1 = 0;
+};
 
-const uint32_t gpioDbMask = 0x00003FC0;
-const uint32_t gpioCtrlMask = 0x003FC000;
-const uint8_t gpioDbOffset = 6;
-const uint8_t gpioCtrlOffset = 14;
+
+/***** Array holding pin map *****/
+const uint8_t databus[8] = { DIO1_PIN, DIO2_PIN, DIO3_PIN, DIO4_PIN, DIO5_PIN, DIO6_PIN, DIO7_PIN, DIO8_PIN };
+const uint8_t ctrlreg[8] = { IFC_PIN, NDAC_PIN, NRFD_PIN, DAV_PIN, EOI_PIN, REN_PIN, SRQ_PIN, ATN_PIN };
+
+
+/***** 64-bit control and data bus pin masks *****/
+uint64_t gpioDbMask = 0;
+uint64_t gpioCtrlMask = 0;
+
+
+/***** ESP GPIO configuratiom object *****/
+gpio_config_t gpioCfg;
+const gpio_config_t * gpioCfgPtr = &gpioCfg;
+
+
+/***** Covert 64-bit mask to 2 x 32-bit regster values *****/
+void mask64ToReg(gpioregister_t& gpioreg, uint64_t mask) {
+  gpioreg.reg0 = (mask & 0xFFFFFFFF);
+  gpioreg.reg1 = (mask >> 32);
+}
+
+
+/***** Convert 2 x 32-bit register values to 64-bit mask *****/
+uint64_t regToMask64(gpioregister_t& gpioreg) {
+  uint64_t gpiomask = 0;
+  gpiomask = gpioreg.reg0;
+  gpiomask |= ((uint64_t)gpioreg.reg1 << 32);
+  return gpiomask;
+}
+
+
+/***** Generate GPIO mask from assigned pin map *****/
+uint64_t genGpioMask(const uint8_t buspins[], uint8_t bitmask) {
+  uint64_t gpioreg = 0;
+  for (uint8_t i=0; i<8; i++) {
+    if (bitmask & (1 << i)) {
+      gpioreg |= ( 1ULL << buspins[i] );
+    }
+  }
+  return gpioreg;
+}
+
+
+void setGpioDirMasked(const uint8_t bus[], uint8_t mask, uint8_t state = INPUT_PULLUP) {
+
+  uint64_t gpiomask = 0;
+
+  for (uint8_t i=0; i<8; i++){
+    if ( mask & (1U << i) ) gpiomask |= (1ULL<<bus[i]);
+  }
+
+  if (state == OUTPUT) {
+  // OUTPUT mode
+    gpioCfg.pin_bit_mask = gpiomask;
+    gpioCfg.mode = GPIO_MODE_INPUT_OUTPUT;
+    gpioCfg.pull_up_en = GPIO_PULLUP_DISABLE;
+  }else{
+    // INPUT_PULLUP mode
+    gpioCfg.pin_bit_mask = gpiomask;
+    gpioCfg.mode = GPIO_MODE_INPUT;
+    gpioCfg.pull_up_en = GPIO_PULLUP_ENABLE;
+  }
+
+  gpio_config(gpioCfgPtr);
+
+}
+
+
+uint8_t digitalReadReg(uint8_t pin){
+  if (pin>SOC_GPIO_PIN_COUNT) return 0;   // Pins above 48 are invalid
+  if (GPIO_IS_VALID_GPIO(pin)) {
+    uint64_t gpioall = 0;
+    gpioregister_t reg;
+  
+    reg.reg0 = REG_READ(GPIO_IN_REG);
+#ifdef GPIO_OUT1_REG
+    reg.reg1 = REG_READ(GPIO_IN1_REG);
+#endif
+    gpioall = regToMask64(reg);
+    if ( gpioall & (1ULL<<pin) ) return 1;
+  }
+  return 0;
+}
+
+
+/***** Init GPIO registers *****/
+void initEspGpioPins(){
+  // Generate masks
+  gpioDbMask = genGpioMask(databus, 0xFF);
+  gpioCtrlMask = genGpioMask(ctrlreg, 0xFF);
+
+  // Configure all GPIOs to input pullup (default?)
+  uint64_t gpioall = (gpioDbMask | gpioCtrlMask);  
+  gpioCfg.pin_bit_mask = gpioall;
+  gpioCfg.mode = GPIO_MODE_INPUT;
+  gpioCfg.pull_up_en = GPIO_PULLUP_ENABLE;
+  gpioCfg.pull_down_en = GPIO_PULLDOWN_DISABLE;
+  gpioCfg.intr_type =  GPIO_INTR_DISABLE;
+  gpio_config(gpioCfgPtr);
+  
+}
+
+
+/**** Set the GPIB data bus to input pullup *****/
+void readyGpibDbus(uint8_t state) {
+
+  gpioregister_t gpiodb;
+  
+  mask64ToReg(gpiodb, gpioDbMask);
+ 
+  // Set pins to OUTPUT
+  if (state == OUTPUT) {
+    setGpioDirMasked(databus, 0xFF, OUTPUT);
+    // Set to HIGH
+    REG_WRITE(GPIO_OUT_W1TS_REG, gpiodb.reg0);
+#ifdef GPIO_OUT1_W1TS_REG
+    REG_WRITE(GPIO_OUT1_W1TS_REG, gpiodb.reg1);
+#endif
+    return;
+  }
+  
+  // Set pins to INPUT_PULLUP
+  setGpioDirMasked(databus, 0xFF, INPUT_PULLUP);
+
+}
+
+
+/***** Read the GPIB data bus wires to collect the byte of data *****/
+uint8_t readGpibDbus() {
+  uint64_t gpioall = 0;
+  gpioregister_t gpioreg;
+  
+  // Read the byte of data on the bus`
+  gpioreg.reg0 = REG_READ(GPIO_IN_REG);
+  gpioreg.reg1 = REG_READ(GPIO_IN1_REG);
+  gpioall = regToMask64(gpioreg);
+
+  // Calculate and return result
+  uint8_t result = 0;
+  for (uint8_t i=0; i<8; i++) {
+    if ( gpioall & (1ULL<<databus[i]) ) result = (result | (1U<<i));
+  }
+  return ~result;
+}
+
+
+/***** Set the GPIB data bus to output and with the requested byte *****/
+void setGpibDbus(uint8_t db) {
+
+  uint64_t busmask = genGpioMask(databus, 0xFF);
+  uint64_t valmask = genGpioMask(databus, db);
+  gpioregister_t busreg;
+  gpioregister_t valreg;
+  mask64ToReg(busreg, busmask);
+  mask64ToReg(valreg, valmask);
+  
+  // Set databus to output
+  readyGpibDbus(OUTPUT);
+  
+  // Set required value
+  if (db>0) {
+    REG_WRITE( GPIO_OUT_W1TC_REG, valreg.reg0 );
+#ifdef GPIO_OUT1_W1TC_REG
+    REG_WRITE( GPIO_OUT1_W1TC_REG, valreg.reg1 );
+#endif
+  }
+}
+
+
+/***** Set GPIB ctrl pin state *****/
+void setGpibCtrlState(uint8_t bits, uint8_t mask){
+
+  uint8_t hbits = bits & mask;
+  uint8_t lbits = ~(bits | ~mask);
+
+  uint64_t gpiomask = 0;
+
+  if (hbits) {
+    gpioregister_t gpioHbits;
+    gpiomask = genGpioMask(ctrlreg, hbits);
+    mask64ToReg(gpioHbits, gpiomask);
+
+    if (gpioHbits.reg0) REG_WRITE( GPIO_OUT_W1TS_REG, gpioHbits.reg0 );
+#ifdef GPIO_OUT1_W1TS_REG
+    if (gpioHbits.reg1) REG_WRITE( GPIO_OUT1_W1TS_REG, gpioHbits.reg1 );
+#endif
+  }
+  
+  if (lbits){
+    gpioregister_t gpioLbits;
+    gpiomask = genGpioMask(ctrlreg, lbits);
+    mask64ToReg(gpioLbits, gpiomask);
+
+    if (gpioLbits.reg0) REG_WRITE( GPIO_OUT_W1TC_REG, gpioLbits.reg0 );
+#ifdef GPIO_OUT1_W1TC_REG
+    if (gpioLbits.reg1) REG_WRITE( GPIO_OUT1_W1TC_REG, gpioLbits.reg1 );
+#endif
+  }
+}
+
+
+/***** Set the direction of control pins *****/
+
+void setGpibCtrlDir(uint8_t bits, uint8_t mask){
+
+  uint8_t obits = bits & mask;
+  uint8_t ibits =  ~(bits | ~mask);
+
+
+  if (obits) setGpioDirMasked(ctrlreg, obits, OUTPUT);
+
+  if (ibits) setGpioDirMasked(ctrlreg, ibits, INPUT_PULLUP);
+  
+}
+
+
+uint8_t getGpibPinState(uint8_t pin){
+//  return digitalRead(pin);
+  return digitalReadReg(pin);
+}
+
+#endif      // ESP32_NATIVE_FUNC
+
+
+
+#if defined(ESP32_ARDUINO_FUNC)
 
 
 const uint8_t databus[8] = { DIO1_PIN, DIO2_PIN, DIO3_PIN, DIO4_PIN, DIO5_PIN, DIO6_PIN, DIO7_PIN, DIO8_PIN };
+
 const uint8_t ctrlbus[8] = { IFC_PIN, NDAC_PIN, NRFD_PIN, DAV_PIN, EOI_PIN, REN_PIN, SRQ_PIN, ATN_PIN };
 
 
-/***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-//  unsigned long pinmask = setRegisterMask(databus);
-//  gpio_set_pull_mode(pinmask, INPUT_PULLUP);
-//  gpio_set_pullup_enable(pinmask, true);
+/***** Dummy function *****/
+void initEspGpioPins(){
 }
 
-/*
+
+/***** Set the GPIB data bus to input pullup *****/
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    for (uint8_t i=0; i<8; i++){
+      pinMode(databus[i], OUTPUT);
+      digitalWrite(databus[i], HIGH);
+    }
+    return;
+  }
+  for (uint8_t i=0; i<8; i++){
+    pinMode(databus[i], INPUT_PULLUP);
+  }
+}
+
+
+/***** Read the GPIB data bus wires to collect the byte of data *****/
+uint8_t readGpibDbus() {
+  uint8_t db = 0;
+  for (uint8_t i=0; i<8; i++){
+    db = db + (digitalRead(databus[i]) ? 0 : 1<<i );
+  }
+  return db;
+}
+
+
+/***** Set the GPIB data bus to output and with the requested byte *****/
+void setGpibDbus(uint8_t db) {
+
+  for (uint8_t i=0; i<8; i++){
+    pinMode(databus[i], OUTPUT);
+    digitalWrite(databus[i], ((db&(1<<i)) ? LOW : HIGH) );
+  }
+  
+}
+
+
+void setGpibCtrlState(uint8_t bits, uint8_t mask) {
+
   // Set pin state
   for (uint8_t i=0; i<8; i++) {
     if (mask&(1<<i)) digitalWrite( ctrlbus[i], ((bits&(1<<i)) ? HIGH : LOW) );
   }
 
 }
-*/
 
-unsigned long setRegisterMask(const uint8_t bus[]){
-  unsigned long pinreg = 0;
-  for (uint8_t i=0; i<8; i++){
-    pinreg = pinreg | (1<<databus[i]);
+
+void setGpibCtrlDir(uint8_t bits, uint8_t mask) {
+
+  // Set pin direction
+  for (uint8_t i=0; i<8; i++) {
+    if (mask&(1<<i)) pinMode( ctrlbus[i], ((bits&(1<<i)) ? OUTPUT : INPUT_PULLUP) );
   }
-  return pinreg;
+
 }
 
 
@@ -1485,9 +1827,8 @@ uint8_t getGpibPinState(uint8_t pin){
   return digitalRead(pin);
 }
 
-////////// INCOMPLETE AND UNTESTED //////////
 
-#endif // ESP32_DEVKIT1_WROOM_32
+#endif  // ESP32_ARDUINO_FUNC
 /***** ^^^^^^^^^^^^^^^^^^^^^^^ *****/
 /***** ESP32 LAYOUT DEFINITION *****/
 /***********************************/
@@ -1577,11 +1918,16 @@ void initRpGpioPins(){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  gpio_set_dir_in_masked(gpioDbMask);
-  gpio_set_pullups_masked(gpioDbMask);
-  
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    gpio_set_dir_out_masked(gpioDbMask);
+    // Set outputs to high
+    gpio_put_masked(gpioDbMask, gpioDbMask);
+  } else {
+    // Set data pins to input
+    gpio_set_dir_in_masked(gpioDbMask);
+    gpio_set_pullups_masked(gpioDbMask);
+  }
 }
 
 
@@ -1744,11 +2090,16 @@ void initRpGpioPins(){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  gpio_set_dir_in_masked(gpioDbMask);
-  gpio_set_pullups_masked(gpioDbMask);
-  
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    gpio_set_dir_out_masked(gpioDbMask);
+    // Set outputs to high
+    gpio_put_masked(gpioDbMask, gpioDbMask);
+  } else {
+    // Set data pins to input
+    gpio_set_dir_in_masked(gpioDbMask);
+    gpio_set_pullups_masked(gpioDbMask);
+  }
 }
 
 
@@ -1925,11 +2276,16 @@ void initRpGpioPins(){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  gpio_set_dir_in_masked(gpioDbMask);
-  gpio_set_pullups_masked(gpioDbMask);
-  
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    gpio_set_dir_out_masked(gpioDbMask);
+    // Set outputs to high
+    gpio_put_masked(gpioDbMask, gpioDbMask);
+  } else {
+    // Set data pins to input
+    gpio_set_dir_in_masked(gpioDbMask);
+    gpio_set_pullups_masked(gpioDbMask);
+  }
 }
 
 
@@ -2084,11 +2440,16 @@ void initRpGpioPins(){
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
-  // Set data pins to input
-  gpio_set_dir_in_masked(gpioDbMask);
-  gpio_set_pullups_masked(gpioDbMask);
-  
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    gpio_set_dir_out_masked(gpioDbMask);
+    // Set outputs to high
+    gpio_put_masked(gpioDbMask, gpioDbMask);
+  } else {
+    // Set data pins to input
+    gpio_set_dir_in_masked(gpioDbMask);
+    gpio_set_pullups_masked(gpioDbMask);
+  }
 }
 
 
@@ -2159,6 +2520,218 @@ uint8_t getGpibPinState(uint8_t pin){
 
 
 
+/***********************************/
+/***** RAS PICO BOARD LAYOUT 5 *****/
+/***** vvvvvvvvvvvvvvvvvvvvvvv *****/
+#ifdef RAS_PICO_LAUTO
+/*
+
+  SN7516x Buffers
+  ---------------
+  TE = 22
+  TC = REN
+
+  Data pin map
+  ------------
+  DIO1_PIN  10 : GPIB 10 : GPIO14
+  DIO2_PIN  11 : GPIB 11 : GPIO15
+  DIO3_PIN  12 : GPIB 12 : GPIO16
+  DIO4_PIN  13 : GPIB 13 : GPIO17
+  DIO5_PIN  14 : GPIB 14 : GPIO18
+  DIO6_PIN  15 : GPIB 15 : GPIO19
+  DIO7_PIN  20 : GPIB 20 : GPIO20
+  DIO8_PIN  21 : GPIB 21 : GPIO21
+
+  Control pin map
+  ---------------
+  IFC_PIN    9 : GPIB 9  : GPIO6  : b0
+  NDAC_PIN   8 : GPIB 8  : GPIO7  : b1
+  NRFD_PIN   7 : GPIB 7  : GPIO8  : b2
+  DAV_PIN    6 : GPIB 6  : GPIO9  : b3
+  EOI_PIN    5 : GPIB 5  : GPIO10 : b4
+  REN_PIN    3 : GPIB 17 : GPIO11 : b5
+  SRQ_PIN    4 : GPIB 10 : GPIO12 : b6
+  ATN_PIN    2 : GPIB 11 : GPIO13 : b7
+
+  Bits control lines as follows: 7-ATN_PIN, 6-SRQ_PIN, 5-REN_PIN, 4-EOI_PIN, 3-DAV_PIN, 2-NRFD_PIN, 1-NDAC_PIN, 0-IFC_PIN
+    bits (databits) : State - 0=LOW, 1=HIGH/INPUT_PULLUP; Direction - 0=input, 1=output;
+    mask (mask)     : 0=unaffected, 1=enabled
+*/
+
+uint8_t minPIN = 0xFF;
+uint8_t maxPIN = 0;
+
+const uint8_t databus[8] = { DIO1_PIN, DIO2_PIN, DIO3_PIN, DIO4_PIN, DIO5_PIN, DIO6_PIN, DIO7_PIN, DIO8_PIN };
+const uint8_t ctrlreg[8] = { IFC_PIN, NDAC_PIN, NRFD_PIN, DAV_PIN, EOI_PIN, REN_PIN, SRQ_PIN, ATN_PIN };
+
+uint32_t gpioDbMask = 0;
+uint32_t gpioCtrlMask = 0;
+
+
+/***** Generate a GPIO mask from 8-bit mask *****/
+uint32_t genGpioMask(const uint8_t buspins[], uint8_t bitmask){
+  uint32_t gpiomask = 0;
+  for (uint8_t i=0; i<8; i++) {
+    if (bitmask & (1 << i)) gpiomask += (1 << buspins[i]);
+  }
+  return gpiomask;
+}
+
+
+/***** Calculate the minimum and maximum pin number *****/
+void getMinMax(){
+  uint8_t i = 0;
+  for (i=0; i<8; i++) {
+    if (databus[i] > maxPIN) maxPIN = databus[i];
+    if (ctrlreg[i] > maxPIN) maxPIN = ctrlreg[i];
+    if (databus[i] < minPIN) minPIN = databus[i];
+    if (ctrlreg[i] < minPIN) minPIN = ctrlreg[i];   
+  }
+  
+}
+
+/*
+void printMinMax(){
+  Serial.print("Min: ");
+  Serial.println(minPIN);
+  Serial.print("Max: ");
+  Serial.println(maxPIN);
+}
+
+
+void printPins(){
+  bool state;
+  for (uint8_t i=minPIN; i<=maxPIN; i++){
+    state = digitalRead(i);
+    Serial.print(F("Pin "));
+    Serial.print(i);
+    Serial.print(F(":\t"));
+    Serial.println(state);
+  }
+}
+*/
+
+/***** Set GPIO internal pullup resistors *****/
+void gpio_set_pullups_masked(uint32_t mask){
+  const uint8_t min = minPIN;
+  const uint8_t max = maxPIN + 1;
+  for (uint8_t i=min; i<max; i++){
+    if ( mask & (1<<i) ) gpio_pull_up(i);
+  }
+}
+
+
+/***** Disable GPIO pull-up resistors *****/
+void gpio_clear_pullups_masked(uint32_t mask){
+  const uint8_t min = minPIN;
+  const uint8_t max = maxPIN + 1;
+  for (uint8_t i=min; i<max; i++){
+    if ( mask & (1<<i) ) gpio_disable_pulls(i);
+  }
+}
+
+
+/***** Initialise all GPIO pins *****/
+void initRpGpioPins(){
+  uint32_t gpiomask = 0;
+  gpioDbMask = genGpioMask(databus, 0xFF);
+  gpioCtrlMask = genGpioMask(ctrlreg, 0xFF);
+  
+  gpiomask = (gpioCtrlMask | gpioDbMask);     // Scope of GPIO pins to be allocated to GPIB
+  getMinMax();                                // Get lowest and highest pin number
+  gpio_init_mask(gpiomask);                   // Configure as GPIO pins those allocated to GPIB
+  gpio_set_dir_in_masked(gpiomask);           // Configure all as inputs by default
+  gpio_set_pullups_masked(gpiomask);          // Enable all pullups (un-asserted) by default
+}
+
+
+/***** Set the GPIB data bus to input pullup *****/
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+
+  // Set pins to OUTPUT
+  if (state == OUTPUT) {
+    // Set pins to output
+    gpio_set_dir_out_masked(gpioDbMask);
+    // Set outputs to high
+    gpio_put_masked(gpioDbMask, gpioDbMask);
+  } else {
+    // Set data pins to input
+    gpio_set_dir_in_masked(gpioDbMask);
+    gpio_set_pullups_masked(gpioDbMask);
+  }
+}
+
+
+/***** Read the GPIB data bus wires to collect the byte of data *****/
+uint8_t readGpibDbus() {
+
+  // Read the byte of data on the bus
+  uint32_t gpioall = gpio_get_all();
+  uint8_t result = 0;
+
+  for (uint8_t i=0; i<8; i++) {
+    if ( gpioall & (1<<databus[i]) ) result |= (1<<i);
+  }
+
+  return ~result;
+}
+
+
+/***** Set the GPIB data bus to output and with the requested byte *****/
+void setGpibDbus(uint8_t db) {
+
+  uint32_t gpiodb = 0;
+  gpiodb = genGpioMask(databus, ~db);
+  
+  gpio_clear_pullups_masked(gpioDbMask);
+  gpio_set_dir_out_masked(gpioDbMask);
+  gpio_put_masked(gpioDbMask, gpiodb);
+
+}
+
+
+/***** Set the state of GPIB control pins *****/
+void setGpibCtrlState(uint8_t bits, uint8_t mask){
+
+  uint32_t gpiobits = genGpioMask(ctrlreg, bits);
+  uint32_t gpiomask = genGpioMask(ctrlreg, mask);
+
+  gpio_put_masked(gpiomask, gpiobits);
+  
+}
+
+
+/***** Set the direction of GPIB control pins *****/
+void setGpibCtrlDir(uint8_t bits, uint8_t mask){
+
+  uint32_t gpioObits = genGpioMask(ctrlreg, (bits&mask));
+  uint32_t gpioIbits = genGpioMask(ctrlreg, (~bits&mask));
+
+  if (gpioObits){
+    gpio_clear_pullups_masked(gpioObits);
+    gpio_set_dir_out_masked(gpioObits);
+  }
+
+  if (gpioIbits){
+    gpio_set_pullups_masked(gpioIbits);
+    gpio_set_dir_in_masked(gpioIbits);
+  }
+  
+}
+
+
+/***** Get the state of a single pin *****/
+uint8_t getGpibPinState(uint8_t pin){
+  return digitalRead(pin);
+}
+
+#endif // RAS_PICO_LAUTO
+/***** ^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***** RAS PICO BOARD LAYOUT 5 *****/
+/***********************************/
+
+
+
 /********************************************/
 /***** UNO/NANO R4 RENESAS BOARD LAYOUT *****/
 /***** vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv *****/
@@ -2200,15 +2773,18 @@ uint8_t getGpibPinState(uint8_t pin){
 
 */
 
-static R_PORT0_Type *port_table[] = { R_PORT0, R_PORT1, R_PORT2, R_PORT3, R_PORT4, R_PORT5, R_PORT6, R_PORT7 };
-static const uint16_t mask_table[] = { 1 << 0, 1 << 1, 1 << 2, 1 << 3, 1 << 4, 1 << 5, 1 << 6, 1 << 7,
-                                       1 << 8, 1 << 9, 1 << 10, 1 << 11, 1 << 12, 1 << 13, 1 << 14, 1 << 15 };
-
 uint8_t databus[8] = { DIO1_PIN, DIO2_PIN, DIO3_PIN, DIO4_PIN, DIO5_PIN, DIO6_PIN, DIO7_PIN, DIO8_PIN };
 uint8_t ctrlbus[8] = { IFC_PIN, NDAC_PIN, NRFD_PIN, DAV_PIN, EOI_PIN, REN_PIN, SRQ_PIN, ATN_PIN };
 
 
+/**
+static R_PORT0_Type *port_table[] = { R_PORT0, R_PORT1, R_PORT2, R_PORT3, R_PORT4, R_PORT5, R_PORT6, R_PORT7 };
+static const uint16_t mask_table[] = { 1 << 0, 1 << 1, 1 << 2, 1 << 3, 1 << 4, 1 << 5, 1 << 6, 1 << 7,
+                                       1 << 8, 1 << 9, 1 << 10, 1 << 11, 1 << 12, 1 << 13, 1 << 14, 1 << 15 };
+*/
+
 /***** Fast write digital pin *****/
+/*
 static inline void digitalWriteFast(uint8_t pin, uint8_t val) {
   uint16_t port_pin = g_pin_cfg[pin].pin;
   uint16_t pin_mask = mask_table[port_pin & 0x0F];
@@ -2219,9 +2795,10 @@ static inline void digitalWriteFast(uint8_t pin, uint8_t val) {
     port_table[port_pin]->PORR = pin_mask;
   }
 }
-
+*/
 
 /***** Fast read digital pin *****/
+/*
 static inline uint16_t digitalReadFast(pin_size_t pin) {
   uint16_t port_pin = g_pin_cfg[pin].pin;
   uint16_t pin_mask = mask_table[port_pin & 0x0F];
@@ -2232,9 +2809,10 @@ static inline uint16_t digitalReadFast(pin_size_t pin) {
     return LOW;
   }
 }
-
+*/
 
 /***** Fast toggle digital pin *****/
+/*
 static inline void digitalToggleFast(pin_size_t pin) {
   uint16_t port_pin = g_pin_cfg[pin].pin;
   uint16_t pin_mask = mask_table[port_pin & 0x0F];
@@ -2246,12 +2824,160 @@ static inline void digitalToggleFast(pin_size_t pin) {
     port_table[port_pin]->POSR = pin_mask;
   }
 }
-
+*/
 
 /***** Set the GPIB data bus to input pullup *****/
+/*
 void readyGpibDbus() {
   for (uint8_t i=0; i<8; i++){
     pinMode(databus[i], INPUT_PULLUP);
+  }
+}
+*/
+
+/***** Read the GPIB data bus wires to collect the byte of data *****/
+/*
+uint8_t readGpibDbus() {
+  uint8_t db = 0;
+  for (uint8_t i=0; i<8; i++){
+    if (!digitalReadFast(databus[i])) db += (1<<i);
+
+  }
+  return db;
+}
+*/
+
+/***** Set the GPIB data bus to output and with the requested byte *****/
+/*
+void setGpibDbus(uint8_t db) {
+
+  for (uint8_t i=0; i<8; i++){
+    pinMode(databus[i], OUTPUT);
+    digitalWriteFast(databus[i], ((db&(1<<i)) ? LOW : HIGH) );
+  }
+  
+}
+*/
+
+/*
+void setGpibCtrlState(uint8_t bits, uint8_t mask) {
+
+  // Set pin state
+  for (uint8_t i=0; i<8; i++) {
+    if (mask&(1<<i)) digitalWriteFast( ctrlbus[i], ((bits&(1<<i)) ? HIGH : LOW) );
+  }
+
+}
+*/
+
+/*
+void setGpibCtrlDir(uint8_t bits, uint8_t mask) {
+  // Set pin direction
+  for (uint8_t i=0; i<8; i++) {
+    if (mask&(1<<i)) pinMode( ctrlbus[i], ((bits&(1<<i)) ? OUTPUT : INPUT_PULLUP) );
+  }
+}
+*/
+
+/*
+uint8_t getGpibPinState(uint8_t pin){
+//  return digitalRead(pin);
+  return digitalReadFast(pin);
+}
+*/
+
+
+
+/***** PinMode Fast digital pin *****/
+
+static inline void pinModeFast(pin_size_t pin, uint8_t val) {
+
+  byte _port = g_pin_cfg[pin].pin >> 8;
+  byte _pin = g_pin_cfg[pin].pin & 0xFF;
+
+    // Unlock PFS registers
+//  R_PMISC->PWPR = 0x00; // Write 0x00 to PWPR_B0WI to disable register write protection.
+//  R_PMISC->PWPR = 0x40; // Write 0x40 to PWPR_PFSWE to enable PFS register write access.
+//  R_PMISC->PWPR &= ~0x80; // Clear PWPR_B0WI to disable register write protection.
+//  R_PMISC->PWPR |= 0x40;  // Set PWPR_PFSWE to enable PFS register write access.
+    
+  if (val == OUTPUT) {
+
+    R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PDR = 1;  // Set direction OUTPUT
+    R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PODR = 1; // Set output HIGH
+    R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PCR = 0;  // Disable pull-up
+    return;
+
+  }
+  
+  R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PMR = 0;  // Set direction input
+  R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PDR = 0;  // Set direction input
+  R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PCR = 1;  // Enable pull-up
+
+  // Re-lock PFS registers
+//  R_PMISC->PWPR = 0x00; // Write 0x00 to PWPR_PFSWE to disable PFS register write access.
+//  R_PMISC->PWPR = 0x80; // Write 0x80 to re-enable register write protection.
+//  R_PMISC->PWPR &= ~0x40; // Clear PWPR_PFSWE to disable PFS register write access.
+//  R_PMISC->PWPR |= 0x80;  // Set PWPR_BOWI re-enable register write protection.
+
+}
+
+
+
+
+
+/***** Fast write digital pin *****/
+static inline void digitalWriteFast(pin_size_t pin, uint8_t val) {
+  
+  byte _port = g_pin_cfg[pin].pin >> 8;
+  byte _pin = g_pin_cfg[pin].pin & 0xFF;
+
+  if (val) {
+    R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PODR = 1;
+  }else{
+    R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PODR = 0;
+  }
+}
+
+
+/***** Fast read digital pin *****/
+static inline uint8_t digitalReadFast(pin_size_t pin) {
+
+  byte _port = g_pin_cfg[pin].pin >> 8;
+  byte _pin = g_pin_cfg[pin].pin & 0xFF;
+  
+  if (R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PIDR) {
+    return HIGH;
+  }else{
+    return LOW;
+  }
+
+}
+
+
+/***** Fast toggle digital pin *****/
+static inline void digitalToggleFast(pin_size_t pin) {
+  
+  byte _port = g_pin_cfg[pin].pin >> 8;
+  byte _pin = g_pin_cfg[pin].pin & 0xFF;
+
+  R_PFS->PORT[_port].PIN[_pin].PmnPFS_b.PODR ^= 1;
+  
+}
+
+
+/***** Set the GPIB data bus to input pullup *****/
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    for (uint8_t i=0; i<8; i++){
+      pinModeFast(databus[i], OUTPUT);
+      digitalWriteFast(databus[i], HIGH);
+    }
+  } else {
+    for (uint8_t i=0; i<8; i++){
+      pinModeFast(databus[i], INPUT_PULLUP);
+    }
+  //  lastbyte = 0;
   }
 }
 
@@ -2261,7 +2987,6 @@ uint8_t readGpibDbus() {
   uint8_t db = 0;
   for (uint8_t i=0; i<8; i++){
     if (!digitalReadFast(databus[i])) db += (1<<i);
-
   }
   return db;
 }
@@ -2269,29 +2994,304 @@ uint8_t readGpibDbus() {
 
 /***** Set the GPIB data bus to output and with the requested byte *****/
 void setGpibDbus(uint8_t db) {
-
   for (uint8_t i=0; i<8; i++){
-    pinMode(databus[i], OUTPUT);
     digitalWriteFast(databus[i], ((db&(1<<i)) ? LOW : HIGH) );
   }
-  
 }
 
 
 void setGpibCtrlState(uint8_t bits, uint8_t mask) {
-
   // Set pin state
   for (uint8_t i=0; i<8; i++) {
     if (mask&(1<<i)) digitalWriteFast( ctrlbus[i], ((bits&(1<<i)) ? HIGH : LOW) );
   }
-
 }
 
 
 void setGpibCtrlDir(uint8_t bits, uint8_t mask) {
   // Set pin direction
   for (uint8_t i=0; i<8; i++) {
-    if (mask&(1<<i)) pinMode( ctrlbus[i], ((bits&(1<<i)) ? OUTPUT : INPUT_PULLUP) );
+    if (mask&(1<<i)) pinModeFast( ctrlbus[i], ((bits&(1<<i)) ? OUTPUT : INPUT_PULLUP) );
+  }
+}
+
+
+uint8_t getGpibPinState(uint8_t pin){
+  return digitalReadFast(pin);
+}
+
+
+
+#endif // RA4M1_NANO_R4
+/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***** UNO/NANO R4 RENESAS BOARD LAYOUT *****/
+/********************************************/
+
+
+
+/***********************************/
+/***** TEENSY 4.1 BOARD LAYOUT *****/
+/***** vvvvvvvvvvvvvvvvvvvvvvv *****/
+#ifdef IMXRT1062_TEENSY41_01
+/*
+  Data pin map
+  ------------
+  DIO1_PIN  23 : GPIB 1  : AD_B1_09 : GPIO1_25
+  DIO2_PIN  22 : GPIB 2  : AD_B1_08 : GPIO1_24
+  DIO3_PIN  21 : GPIB 3  : AD_B1_11 : GPIO1_27
+  DIO4_PIN  20 : GPIB 4  : AD_B1_10 : GPIO1_26
+  DIO5_PIN  19 : GPIB 13 : AD_B1_00 : GPIO1_16
+  DIO6_PIN  18 : GPIB 14 : AD_B1_01 : GPIO1_17
+  DIO7_PIN  17 : GPIB 15 : AD_B1_06 : GPIO1_22
+  DIO8_PIN  16 : GPIB 16 : AD_B1_07 : GPIO1_23
+
+  Control pin map
+  ---------------
+  IFC_PIN   15 : GPIB 9  : AD_B1_03 : GPIO1_19 : b0
+  NDAC_PIN  14 : GPIB 8  : AD_B1_02 : GPIO1_18 : b1
+  NRFD_PIN  41 : GPIB 7  : AD_B1_05 : GPIO1_21 : b2
+  DAV_PIN   40 : GPIB 6  : AD_B1_04 : GPIO1_20 : b3
+  EOI_PIN   39 : GPIB 5  : AD_B1_13 : GPIO1_29 : b4
+
+  REN_PIN   26 : GPIB 17 : AD_B1_14 : GPIO1_30 : b5
+  SRQ_PIN   38 : GPIB 10 : AD_B1_12 : GPIO1_28 : b6
+  ATN_PIN   27 : GPIB 11 : AD_B1_15 : GPIO1_31 : b7
+
+  Bits control lines as follows: 7-ATN_PIN, 6-SRQ_PIN, 5-REN_PIN, 4-EOI_PIN, 3-DAV_PIN, 2-NRFD_PIN, 1-NDAC_PIN, 0-IFC_PIN
+    bits (databits) : State - 0=LOW, 1=HIGH/INPUT_PULLUP; Direction - 0=input, 1=output;
+    mask (mask)     : 0=unaffected, 1=enabled
+*/
+
+
+/***************************************/
+/*****   TEENSY NATIVE FUNCTIONS   *****/
+/***************************************/
+/*
+ * While the GPIO direction is set to input, (GDIR[GDIR]=0), a
+ * read access to DR does not return DR data. Instead it returns
+ * the PSR data, which is the corresponding input signal value.
+ *
+ * GDIR - direction register
+ * DR   - data register
+ * PSR  - pad sample register
+*/
+
+/***** GPIB data and control buses ******/
+const uint8_t databus[2][8] = {
+                { DIO1_PIN, DIO2_PIN, DIO3_PIN, DIO4_PIN, DIO5_PIN, DIO6_PIN, DIO7_PIN, DIO8_PIN },
+                { 25, 24, 27, 26, 16, 17, 22, 23 }  // Corresponding GPIO6 bits
+};
+
+const uint8_t ctrlbus[2][8] = {
+                { IFC_PIN, NDAC_PIN, NRFD_PIN, DAV_PIN, EOI_PIN, REN_PIN, SRQ_PIN, ATN_PIN },
+                { 19, 18, 21, 20, 29, 30, 28, 31 }  // Corresponding GPIO6 bits
+};
+
+
+/***** GPIO6 register value *****/
+uint32_t gpioDbReg = 0;
+uint32_t gpioctrlbus = 0;
+
+volatile uint32_t * iomuxcPadGpio6[] = {
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_00,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_01,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_02,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_03,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_04,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_05,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_06,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_07,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_08,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_09,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_10,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_11,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_12,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_13,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_14,
+  &IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_15
+};
+
+volatile uint32_t * iomuxcMuxGpio6[] = {
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_00,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_01,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_02,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_03,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_04,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_05,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_06,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_07,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_08,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_09,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_10,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_11,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_12,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_13,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_14,
+  &IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_15
+};
+
+
+/***** Generate GPIO mask from assigned pin map *****/
+uint64_t genGpioMask(const uint8_t buspins[][8], uint8_t bitmask) {
+  uint64_t gpioreg = 0;
+  for (uint8_t i=0; i<8; i++) {
+    if (bitmask & (1 << i)) {
+      gpioreg |= ( 1ULL << buspins[1][i] );
+    }
+  }
+  return gpioreg;
+}
+
+
+/***** Set pullups on all bus pins *****/
+void setBusPullups(const uint8_t bus[][8], bool enable) {
+  volatile uint32_t * regptr = 0;
+  if (enable) {
+    for (uint8_t i=0; i<8; i++){
+      regptr = iomuxcPadGpio6[ (bus[1][i] - 16) ];
+      *regptr |= PIN_PULLUP_ENABLE;
+    }
+    return;
+  }
+  for (uint8_t i=0; i<8; i++){
+    regptr = iomuxcPadGpio6[ (bus[1][i] - 16) ];
+    *regptr &= PIN_PULLUP_DISABLE;  
+  }
+}
+
+
+/***** Set SION bit on all bus pins *****/
+void setBusSionBit(const uint8_t bus[][8], bool enable) {
+  volatile uint32_t * regptr = 0;
+  if (enable) {
+    for (uint8_t i=0; i<8; i++){
+      regptr = iomuxcMuxGpio6[ (bus[1][i] - 16) ];
+      *regptr |= PIN_SION_ENABLE; 
+    }
+    return;
+  }
+  for (uint8_t i=0; i<8; i++){
+    regptr = iomuxcMuxGpio6[ (bus[1][i] - 16) ];
+    *regptr &= PIN_SION_DISABLE;    
+  }
+}
+
+
+/***** Print 32-bit register *****/
+void printReg(const char * regname, uint32_t regvalue){
+  char buffer[64];
+  char valbuf[34]; 
+  
+  memset(buffer, '\0', sizeof(buffer));
+  memset(valbuf, '\0', sizeof(valbuf));
+  memset(valbuf, 0x30, 32);
+
+  for (uint8_t i=0; i<32; i++) {
+    if (regvalue & (1UL<<i)) valbuf[31-i]++;
+  }
+  
+  sprintf(buffer, "%-10s: %s", regname, valbuf);
+  Serial.println(buffer);
+}
+
+
+/***** Initialise GPIO pins *****/
+void initTsyGpioPins(){
+
+  uint32_t gpioall;
+
+  // Generate mask that identifies bits for each bus
+  gpioDbReg = genGpioMask(databus, 0xFF);
+  gpioctrlbus = genGpioMask(ctrlbus, 0xFF);
+  gpioall = (gpioDbReg | gpioctrlbus);
+  
+  // Set all required GPIOs to input_pullup
+  GPIO1_GDIR &= ~gpioall;
+  setBusSionBit(databus, true);
+  setBusSionBit(ctrlbus, true);
+  setBusPullups(databus, true);
+  setBusPullups(ctrlbus, true);
+
+}
+
+
+/***** Set the GPIB data bus to input pullup *****/
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+
+  if (state == OUTPUT) {
+    GPIO6_GDIR |= gpioDbReg;
+    setBusPullups(databus, false);
+    GPIO6_DR |= gpioDbReg;    // Outputs high by default
+  } else {
+    GPIO6_GDIR &= ~gpioDbReg;
+    setBusPullups(databus, true);
+  }
+}
+
+
+/***** Read the GPIB data bus wires to collect the byte of data *****/
+uint8_t readGpibDbus() {
+  uint8_t db = 0;
+  uint32_t reg = GPIO6_PSR;
+  
+  for (uint8_t i=0; i<8; i++){
+    if ( reg & (1UL<<databus[1][i]) ) db |= (1U<<i);
+  }
+  
+  return ~db;
+}
+
+
+/***** Set the GPIB data bus to output and with the requested byte *****/
+void setGpibDbus(uint8_t db) {
+
+  uint32_t gpioval = genGpioMask(databus, ~db);
+
+  GPIO6_GDIR |= gpioDbReg;            // Set as outputs
+  GPIO6_DR |= gpioDbReg;              // Set high
+  setBusPullups(databus, false);   // Disable pull-ups  
+  GPIO6_DR &= (gpioval | ~gpioDbReg); // Set value
+
+}
+
+
+/***** Set control pin output level *****/
+void setGpibCtrlState(uint8_t bits, uint8_t mask) {
+  uint32_t gpiobit = 0;
+  for (uint8_t i=0; i<8; i++) {    
+    gpiobit = (1UL<<ctrlbus[1][i]);
+    if (mask&(1U<<i)) {
+      if (bits&(1U<<i)) {
+        GPIO6_DR |= gpiobit;
+      }else{
+        GPIO6_DR &= ~gpiobit;
+      }
+    }
+  }
+}
+
+
+/***** Set control pin direction *****/
+void setGpibCtrlDir(uint8_t bits, uint8_t mask) {
+  volatile uint32_t * regptr = 0;
+  uint32_t gpiobit = 0;
+  uint8_t idx = 0;
+  for (uint8_t i=0; i<8; i++) {
+    if (mask&(1U<<i)) {
+      gpiobit = (1UL<<ctrlbus[1][i]);
+      idx = ctrlbus[1][i] - 16;
+      if (bits&(1U<<i)) {
+        // Output
+        GPIO6_GDIR |= gpiobit;
+        regptr = iomuxcPadGpio6[idx];
+        *regptr &= PIN_PULLUP_DISABLE;
+      }else{
+        // Input_pullup
+        GPIO6_GDIR &= ~gpiobit;
+        regptr = iomuxcPadGpio6[idx];
+        *regptr |= PIN_PULLUP_ENABLE;
+      }
+    }    
   }
 }
 
@@ -2302,26 +3302,33 @@ uint8_t getGpibPinState(uint8_t pin){
 }
 
 
-#endif // RA4M1_NANO_R4
-/***** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *****/
-/***** UNO/NANO R4 RENESAS BOARD LAYOUT *****/
-/********************************************/
+#endif  // IMXRT1062_TEENSY41_01
+/***** ^^^^^^^^^^^^^^^^^^^^^^^ *****/
+/***** TEENSY 4.1 BOARD LAYOUT *****/
+/***********************************/
+
 
 
 
 /*************************************/
 /***** CUSTOM PIN LAYOUT SECTION *****/
 /***** vvvvvvvvvvvvvvvvvvvvvvvvv *****/
-//#ifdef AR488_CUSTOM
-#if defined (AR488_CUSTOM) || defined (NON_ARDUINO)
-
+#if defined (AR488_CUSTOM_DEFAULT) || defined (NON_ARDUINO)
 
 uint8_t databus[8] = { DIO1_PIN, DIO2_PIN, DIO3_PIN, DIO4_PIN, DIO5_PIN, DIO6_PIN, DIO7_PIN, DIO8_PIN };
 uint8_t ctrlbus[8] = { IFC_PIN, NDAC_PIN, NRFD_PIN, DAV_PIN, EOI_PIN, REN_PIN, SRQ_PIN, ATN_PIN };
 
 
 /***** Set the GPIB data bus to input pullup *****/
-void readyGpibDbus() {
+void readyGpibDbus(uint8_t state = INPUT_PULLUP) {
+  if (state == OUTPUT) {
+    for (uint8_t i=0; i<8; i++){
+      pinMode(databus[i], OUTPUT);
+      // Set outputs to high?
+      digitalWrite(databus[i], HIGH);
+    }
+  }
+
   for (uint8_t i=0; i<8; i++){
     pinMode(databus[i], INPUT_PULLUP);
   }
@@ -2349,34 +3356,6 @@ void setGpibDbus(uint8_t db) {
 }
 
 
-/***** Set the direction and state of the GPIB control lines ****/
-/*
-   Bits control lines as follows: 7-ATN_PIN, 6-SRQ_PIN, 5-REN_PIN, 4-EOI_PIN, 3-DAV_PIN, 2-NRFD_PIN, 1-NDAC_PIN, 0-IFC_PIN
-   state: 0=LOW; 1=HIGH/INPUT_PULLUP
-   dir  : 0=input; 1=output;
-   mode:  0=set pin state; 1=set pin direction
-*/
-/*
-void setGpibState(uint8_t bits, uint8_t mask, uint8_t mode) {
-
-  switch (mode) {
-    case 0:
-      // Set pin state
-      for (uint8_t i=0; i<8; i++) {
-        if (mask&(1<<i)) digitalWrite( ctrlbus[i], ((bits&(1<<i)) ? HIGH : LOW) );
-      }
-      break;
-    case 1:
-      // Set pin direction
-      for (uint8_t i=0; i<8; i++) {
-        if (mask&(1<<i)) pinMode( ctrlbus[i], ((bits&(1<<i)) ? OUTPUT : INPUT_PULLUP) );
-      }
-      break;
-  }
-
-}
-*/
-
 void setGpibCtrlState(uint8_t bits, uint8_t mask) {
 
   // Set pin state
@@ -2397,7 +3376,7 @@ void setGpibCtrlDir(uint8_t bits, uint8_t mask) {
 }
 
 uint8_t getGpibPinState(uint8_t pin){
-  return digitalRead(pin);
+  return digitalReadFast(pin);
 }
 
 #endif
