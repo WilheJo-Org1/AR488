@@ -79,10 +79,12 @@
 
 
 
-#if AR_SERIAL_PORT_USE_USBSerial==1
+#if defined(AR_SERIAL_PORT_USE_USBSerial)
   #include "USB.h"
   #include "USBCDC.h"
-  USBCDC USBSerial(0);
+  #if  ARDUINO_USB_CDC_ON_BOOT!=1
+    USBCDC USBSerial(0);
+  #endif
   #ifdef DEBUG_ENABLE
     #ifdef ESP32_Wilhelm_AR488_ESP32S2_2ndCdcForDebug
       USBCDC USBDebugSerial(1);
@@ -384,7 +386,7 @@ void setup() {
   startDebugPort(DB_SERIAL_SPEED);
 #endif
 
-#if AR_SERIAL_PORT_USE_USBSerial==1
+#if defined(AR_SERIAL_PORT_USE_USBSerial)
 
   //fore re-enumeration
   pinMode(20, OUTPUT);

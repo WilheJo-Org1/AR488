@@ -8,7 +8,7 @@
 
 /***** Firmware version *****/
 #define FWVER "AR488 GPIB controller, ver. 0.53.46 (JW), 25/09/2026"
-
+#define FWVER_USB 0x0053
 
 /***** BOARD CONFIGURATION *****/
 /*
@@ -78,9 +78,11 @@
   //#define ESP32_LOLIN32_161   // ESP32_LOLIN32_161_V2 profile has the same pin assigments
   //#define ESP32_S2_161
   
-  #define ESP32_Wilhelm_AR488_ESP32S2_R4
+  #define AR_SERIAL_PORT_USE_USBSerial
   //#define ESP32_Wilhelm_AR488_ESP32S2_2ndCdcForDebug
-//  #define ESP32_Wilhelm_AR488_ESP32S2_R5
+
+  //#define ESP32_Wilhelm_AR488_ESP32S2_R4
+  #define ESP32_Wilhelm_AR488_ESP32S2_R5
   /*
    * Select board ESP32S2 Dev Module from the espressif board definitions
    * Additionally, USB CDC On Boot should be set to "Enabled".
@@ -123,7 +125,14 @@
 #define DATAPORT_ENABLE
 #ifdef DATAPORT_ENABLE
   // Serial port device
-  #define AR_SERIAL_PORT Serial
+  #if  ARDUINO_USB_CDC_ON_BOOT!=1
+    #define AR_SERIAL_PORT_USE_USBSerial 1
+    #define AR_SERIAL_PORT USBSerial
+    extern USBCDC USBSerial;
+
+  #else
+    #define AR_SERIAL_PORT Serial
+  #endif
   // #define AR_SERIAL_SWPORT
   // Set port operating speed
   #define AR_SERIAL_SPEED 115200
@@ -200,7 +209,7 @@
  */
 
 
-#ifdef ESP32_Wilhelm_AR488_ESP32S2_R4
+#if defined(ESP32_Wilhelm_AR488_ESP32S2_R4)
   #define SN7516X
   #define SN7516X_TE 17
   // requires hardware modification:
@@ -208,7 +217,7 @@
   // * unsolder R6 (below ESP32)
   // * add wire from former R6 hot end to U12 pin 11 (DC)
   #define SN7516X_DC 45
-#elif ESP32_Wilhelm_AR488_ESP32S2_R5
+#elif defined(ESP32_Wilhelm_AR488_ESP32S2_R5)
   #define SN7516X
   #define SN7516X_TE 17
   #define SN7516X_DC 38
